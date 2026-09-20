@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Presentación Comercial | CRM para Corredores de Seguros</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+    :root {
+      --brand-navy: #0f1c3f;
+      --brand-navy-light: #182852;
+      --brand-teal: #1886a3;
+      --brand-teal-light: #e6f4f7;
+      --brand-olive: #6b8c42;
+      --brand-olive-light: #f0f6ea;
+      --brand-gray: #f8fafc;
+      --brand-border: #e2e8f0;
+      --brand-text: #1e293b;
+      --brand-muted: #64748b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--brand-text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    @page {
+      size: 297mm 210mm;
+      margin: 0;
+    }
+
+    @media print {
+      body {
+        margin: 0;
+        padding: 0;
+        background: white;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .slide {
+        width: 297mm !important;
+        height: 210mm !important;
+        page-break-after: always !important;
+        page-break-inside: avoid !important;
+        overflow: hidden !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+
+    @media screen {
+      body {
+        background: #0b1329;
+        padding: 40px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+      }
+      .slide {
+        width: 297mm;
+        height: 210mm;
+        background: white;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        border-radius: 8px;
+        overflow: hidden;
+        position: relative;
+      }
+      .top-floating-bar {
+        position: sticky;
+        top: 20px;
+        z-index: 100;
+        background: white;
+        padding: 12px 24px;
+        border-radius: 50px;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        display: flex;
+        gap: 16px;
+        align-items: center;
+      }
+    }
+
+    .slide {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 45px 55px;
+      background: #ffffff;
+    }
+
+    /* Slide Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 25px;
+      border-bottom: 1.5px solid var(--brand-border);
+      padding-bottom: 18px;
+    }
+
+    .slide-section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--brand-teal);
+      background: var(--brand-teal-light);
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+
+    .slide-title {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--brand-navy);
+      line-height: 1.15;
+    }
+
+    .slide-subtitle {
+      font-size: 13px;
+      color: var(--brand-muted);
+      margin-top: 4px;
+    }
+
+    .slide-logo-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--brand-navy);
+      background: var(--brand-gray);
+      padding: 6px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--brand-border);
+    }
+
+    /* Slide Body Grid */
+    .slide-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+      flex: 1;
+    }
+
+    .slide-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      flex: 1;
+    }
+
+    /* Impact Cards */
+    .impact-card {
+      background: var(--brand-gray);
+      border-radius: 18px;
+      padding: 24px;
+      border: 1px solid var(--brand-border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .impact-card-time {
+      background: linear-gradient(145deg, #f0f9ff 0%, #e0f2fe 100%);
+      border: 1.5px solid #bae6fd;
+    }
+
+    .impact-card-money {
+      background: linear-gradient(145deg, #f0fdf4 0%, #dcfce7 100%);
+      border: 1.5px solid #bbf7d0;
+    }
+
+    .impact-badge-time {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #0369a1;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+
+    .impact-badge-money {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #15803d;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+
+    .impact-headline {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--brand-navy);
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+
+    .impact-text {
+      font-size: 12.5px;
+      color: #334155;
+      line-height: 1.55;
+    }
+
+    .impact-stat-box {
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: white;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .impact-stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--brand-muted);
+    }
+
+    .impact-stat-val {
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .stat-blue { color: #0284c7; }
+    .stat-green { color: #16a34a; }
+    .stat-amber { color: #d97706; }
+
+    /* Key points list */
+    .key-points {
+      list-style: none;
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .key-points li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 12px;
+      color: #475569;
+      line-height: 1.4;
+    }
+
+    .key-points li svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* Slide Footer */
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--brand-border);
+      padding-top: 14px;
+      font-size: 10.5px;
+      color: var(--brand-muted);
+      margin-top: 18px;
+    }
+
+    .slide-footer-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .slide-footer-dot {
+      width: 4px;
+      height: 4px;
+      background: #cbd5e1;
+      border-radius: 50%;
+    }
+
+    /* DARK COVER SLIDE */
+    .slide-dark {
+      background: linear-gradient(135deg, #091227 0%, #0f1c3f 50%, #152654 100%);
+      color: white;
+    }
+
+    .slide-dark .slide-header {
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    .slide-dark .slide-title {
+      color: white;
+    }
+
+    .slide-dark .slide-subtitle {
+      color: #94a3b8;
+    }
+
+    .slide-dark .slide-footer {
+      border-color: rgba(255,255,255,0.15);
+      color: #94a3b8;
+    }
+
+    /* Table Styles */
+    .styled-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      text-align: left;
+    }
+
+    .styled-table th {
+      background: var(--brand-navy);
+      color: white;
+      padding: 10px 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .styled-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--brand-border);
+      color: #334155;
+    }
+
+    .styled-table tr:nth-child(even) {
+      background: var(--brand-gray);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen controls -->
+  <div class="top-floating-bar no-print">
+    <span style="font-weight:700;font-size:13px;color:var(--brand-navy);">📄 Presentación Comercial (10 Diapositivas - Ahorro & ROI)</span>
+    <a href="Presentacion_Comercial_CRM_Seguros.pdf" download="Presentacion_Comercial_CRM_Seguros.pdf" style="text-decoration:none;background:#6b8c42;color:white;padding:8px 18px;border-radius:20px;font-weight:700;font-size:12px;display:inline-flex;align-items:center;gap:6px;box-shadow:0 2px 4px rgba(0,0,0,0.1);">
+      ⬇️ Descargar PDF Oficial
+    </a>
+    <a href="index.html" style="text-decoration:none;background:var(--brand-navy);color:white;padding:8px 18px;border-radius:20px;font-weight:700;font-size:12px;display:inline-flex;align-items:center;gap:6px;box-shadow:0 2px 4px rgba(0,0,0,0.1);">
+      🖥️ Ir al CRM en Vivo
+    </a>
+    <button onclick="window.print()" style="background:var(--brand-teal);color:white;border:none;padding:8px 18px;border-radius:20px;font-weight:700;font-size:12px;cursor:pointer;">
+      🖨️ Imprimir
+    </button>
+  </div>
+
+  <!-- ================= SLIDE 1: PORTADA ================= -->
+  <section class="slide slide-dark">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <span style="background:rgba(24,134,163,0.25);color:#38bdf8;padding:6px 16px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:0.08em;border:1px solid rgba(56,189,248,0.3);">
+        PROPUESTA DE VALOR & RETORNO DE INVERSIÓN
+      </span>
+      <span style="font-size:11px;color:#94a3b8;font-weight:600;">CRM CORREDOR DE SEGUROS 2026</span>
+    </div>
+
+    <div style="margin:auto 0;max-width:850px;">
+      <h1 style="font-size:42px;font-weight:900;line-height:1.1;color:white;margin-bottom:16px;">
+        La Plataforma con IA que <span style="color:#38bdf8;">Multiplica tu Tiempo</span> y <span style="color:#4ade80;">Protege tus Comisiones</span>
+      </h1>
+      <p style="font-size:16px;color:#cbd5e1;line-height:1.6;font-weight:300;margin-bottom:30px;">
+        Diseñada exclusivamente para corredores, agentes y sociedades de corretaje de seguros. Automatiza cobranzas fraccionadas, elimina el trabajo manual de transcripción con IA y audita tus liquidaciones bancarias al 100%.
+      </p>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;">
+        <div style="background:rgba(255,255,255,0.06);padding:18px;border-radius:14px;border:1px solid rgba(255,255,255,0.12);">
+          <div style="font-size:26px;font-weight:900;color:#38bdf8;">+30 Horas</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:4px;">Ahorradas cada mes en tareas administrativas y cálculos manuales</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.06);padding:18px;border-radius:14px;border:1px solid rgba(255,255,255,0.12);">
+          <div style="font-size:26px;font-weight:900;color:#4ade80;">-60% Cancelación</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:4px;">En anulación de pólizas por impago gracias a avisos automáticos de WhatsApp</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.06);padding:18px;border-radius:14px;border:1px solid rgba(255,255,255,0.12);">
+          <div style="font-size:26px;font-weight:900;color:#facc15;">3 Segundos</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:4px;">Para digitalizar cualquier póliza en PDF con extracción de datos mediante IA</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <div class="slide-footer-left">
+        <span>Confidencial • Uso Comercial</span>
+        <div class="slide-footer-dot"></div>
+        <span>SUDEASEG Compliant</span>
+        <div class="slide-footer-dot"></div>
+        <span>Multi-Aseguradora Nacional e Internacional</span>
+      </div>
+      <span>Diapositiva 01 / 10</span>
+    </div>
+  </section>
+
+  <!-- ================= SLIDE 2: EL PROBLEMA ================= -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="slide-section-tag">Diagnóstico de la Industria</div>
+        <h2 class="slide-title">¿Dónde Pierde Dinero y Tiempo el Corredor Tradicional?</h2>
+        <p class="slide-subtitle">La gestión artesanal en cuadernos y hojas de Excel dispersas frena el crecimiento del negocio.</p>
+      </div>
+      <div class="slide-logo-badge">Pérdidas Visibles</div>
+    </div>
+
+    <div class="slide-grid-2">
+      <div class="impact-card" style="background:#fff1f2;border-color:#fecdd3;">
+        <div>
+          <div style="color:#e11d48;font-size:11px;font-weight:800;text-transform:uppercase;margin-bottom:10px;">🔴 Cuellos de Botella Operativos</div>
+          <h3 style="font-size:18px;font-weight:800;color:#881337;margin-bottom:10px;">Horas Muertas en Transcripción Manual</h3>
+          <p style="font-size:12px;color:#4c0519;line-height:1.6;">
+            Cada póliza emitida requiere entre <strong>15 y 20 minutos</strong> para transcribir datos de carátulas, deducibles, números de contrato y fechas a un Excel. Con 40 pólizas al mes, son más de <strong>12 horas perdidas</strong> que no se usan para ventas.
+          </p>
+        </div>
+        <div class="impact-stat-box" style="border-color:#fecdd3;">
+          <span class="impact-stat-label">Tiempo administrativo no facturable:</span>
+          <span class="impact-stat-val" style="color:#e11d48;">65% del día</span>
+        </div>
+      </div>
+
+      <div class="impact-card" style="background:#fff7ed;border-color:#fed7aa;">
+        <div>
+          <div style="color:#ea580c;font-size:11px;font-weight:800;text-transform:uppercase;margin-bottom:10px;">🟠 Fuga Silenciosa de Comisiones</div>
+          <h3 style="font-size:18px;font-weight:800;color:#7c2d12;margin-bottom:10px;">Pólizas Fraccionadas que se Anulan</h3>
+          <p style="font-size:12px;color:#431407;line-height:1.6;">
+            En pagos trimestrales o mensuales, el cliente olvida pagar la cuota 2 o 3. La compañía anula la póliza por falta de pago y <strong>el corredor pierde la comisión del resto del año</strong> simplemente porque nadie envió un aviso oportuno.
+          </p>
+        </div>
+        <div class="impact-stat-box" style="border-color:#fed7aa;">
+          <span class="impact-stat-label">Comisión perdida por anulación:</span>
+          <span class="impact-stat-val" style="color:#ea580c;">$2,400 - $4,000 / año</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;background:var(--brand-navy);color:white;padding:16px 20px;border-radius:14px;display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-size:13px;font-weight:600;">
+        💡 La Solución: Un CRM que automatiza el 100% de la carga administrativa y audita cada centavo de comisión.
+      </div>
+      <span style="font-size:11px;font-weight:800;color:#38bdf8;text-transform:uppercase;">Tecnología 2026</span>
+    </div>
+
+    <div class="slide-footer">
+      <span>Diagnóstico Operativo • Retos del Corretaje Moderno</span>
+      <span>Diapositiva 02 / 10</span>
+    </div>
+  </section>
+
+  <!-- ================= SLIDE 3: DASHBOARD ================= -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="slide-section-tag">Módulo 1: Visión 360°</div>
+        <h2 class="slide-title">Dashboard Gerencial en Tiempo Real</h2>
+        <p class="slide-subtitle">Control absoluto de cartera, concentración de aseguradoras y proyección de comisiones.</p>
+      </div>
+      <div class="slide-logo-badge">Panel Central</div>
+    </div>
+
+    <div class="slide-grid-2">
+      <!-- Tarjeta Tiempo -->
+      <div class="impact-card impact-card-time">
+        <div>
+          <div class="impact-badge-time">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Impacto en Tiempo
+          </div>
+          <h3 class="impact-headline">De 4 Horas Semanales a 5 Segundos</h3>
+          <p class="impact-text">
+            Se acabaron los domingos cuadrando hojas de cálculo rotas para saber cuántas pólizas tienes activas o cuánto dinero entró en el mes. El Dashboard consolida métricas al instante y genera gráficos automáticos de estacionalidad.
+          </p>
+          <ul class="key-points">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Consolidación automática de primas y comisiones en vivo.</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Reportes ejecutivos listos para juntas y socios al instante.</li>
+          </ul>
+        </div>
+        <div class="impact-stat-box">
+          <span class="impact-stat-label">Tiempo ahorrado al mes:</span>
+          <span class="impact-stat-val stat-blue">16 Horas</span>
+        </div>
+      </div>
+
+      <!-- Tarjeta Dinero -->
+      <div class="impact-card impact-card-money">
+        <div>
+          <div class="impact-badge-money">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Impacto en Dinero
+          </div>
+          <h3 class="impact-headline">Negociación de Sobre-Comisiones</h3>
+          <p class="impact-text">
+            El gráfico de <strong>Concentración de Cartera</strong> te muestra qué aseguradora lidera tu producción. Con datos auditados en mano, puedes sentarte con la gerencia comercial y exigir un <strong>2% a 5% de comisión extra por volumen</strong>.
+          </p>
+          <ul class="key-points">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Detección de fugas de cartera antes de la fecha de corte.</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Ingreso adicional estimado: <strong>+$1,500 a $4,000 / año</strong>.</li>
+          </ul>
+        </div>
+        <div class="impact-stat-box">
+          <span class="impact-stat-label">Ganancia potencial estimada:</span>
+          <span class="impact-stat-val stat-green">+3% a 5% en Comisión</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Dashboard • Concentración de Cartera • Proyección Mensual</span>
+      <span>Diapositiva 03 / 10</span>
+    </div>
+  </section>
+
+  <!-- ================= SLIDE 4: CLIENTES ================= -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="slide-section-tag">Módulo 2: Gestión de Cartera</div>
+        <h2 class="slide-title">Directorio Digital de Clientes y Expedientes</h2>
+        <p class="slide-subtitle">Centralización de personas y empresas con historial de pólizas y control de solvencia.</p>
+      </div>
+      <div class="slide-logo-badge">Expediente 360°</div>
+    </div>
+
+    <div class="slide-grid-2">
+      <div class="impact-card impact-card-time">
+        <div>
+          <div class="impact-badge-time">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Impacto en Tiempo
+          </div>
+          <h3 class="impact-headline">Expediente Completo en 2 Segundos</h3>
+          <p class="impact-text">
+            Cuando un asegurado llama en medio de una emergencia médica o choque, no puedes tardar 10 minutos buscando en archivadores físicos. Con este CRM buscas por nombre, cédula o RIF y tienes toda su información al instante desde el celular.
+          </p>
+          <ul class="key-points">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Acceso 100% móvil desde cualquier lugar sin depender de la oficina.</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Historial consolidado de pólizas individuales y familiares.</li>
+          </ul>
+        </div>
+        <div class="impact-stat-box">
+          <span class="impact-stat-label">Respuesta al cliente:</span>
+          <span class="impact-stat-val stat-blue">Inmediata (2 seg)</span>
+        </div>
+      </div>
+
+      <div class="impact-card impact-card-money">
+        <div>
+          <div class="impact-badge-money">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Impacto en Dinero
+          </div>
+          <h3 class="impact-headline">Venta Cruzada (Cross-Selling) Activa</h3>
+          <p class="impact-text">
+            El sistema te muestra claramente qué asegurados tienen solo póliza de Automóvil para ofrecerles cobertura de Salud Familiar o Responsabilidad Civil Empresarial. Venderle a un cliente existente cuesta <strong>5 veces menos</strong> que captar uno nuevo.
+          </p>
+          <ul class="key-points">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Aumento del ticket promedio por asegurado en más de 35%.</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Blindaje del cliente: a más pólizas contratadas, menor riesgo de que se vaya con otro corredor.</li>
+          </ul>
+        </div>
+        <div class="impact-stat-box">
+          <span class="impact-stat-label">Crecimiento en ticket promedio:</span>
+          <span class="impact-stat-val stat-green">+35% Cartera</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Clientes • Expediente Digitalizado • Control de Solvencia</span>
+      <span>Diapositiva 04 / 10</span>
+    </div>
+  </section>
+
+  <!-- ================= SLIDE 5: POLIZAS IA ================= -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="slide-section-tag">Módulo 3: Automatización con IA</div>
+        <h2 class="slide-title">Carga Inteligente de Pólizas (Extracción PDF)</h2>
+        <p class="slide-subtitle">Sube el documento emitido por la compañía y la IA hace todo el registro en 3 segundos.</p>
+      </div>
+      <div class="slide-logo-badge">IA Gemini Flash</div>
+    </div>
+
+    <div class="slide-grid-2">
+      <div class="impact-card impact-card-time">
+        <div>
+          <div class="impact-badge-time">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Impacto en Tiempo
+          </div>
+          <h3 class="impact-headline">De 15 Minutos a Solo 3 Segundos</h3>
+          <p class="impact-text">
+            Arrastra la carátula PDF de cualquier aseguradora (Caracas, Mercantil, Pirámide, Oceánica, Mapfre...). La IA lee y extrae: asegurado, RIF, número de póliza, vigencia, forma de pago y prima anual, calculando la comisión neta en milisegundos.
+          </p>
+          <ul class="key-points">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Ahorro de 12 a 15 horas de trabajo administrativo al mes.</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Tu secretaria o asistente multiplica su productividad por 10.</li>
+          </ul>
+        </div>
+        <div class="impact-stat-box">
+          <span class="impact-stat-label">Velocidad de carga de póliza:</span>
+          <span class="impact-stat-val stat-blue">98% más rápido</span>
+        </div>
+      </div>
+
+      <div class="impact-card impact-card-money">
+        <div>
+          <div class="impact-badge-money">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Impacto en Dinero
+          </div>
+          <h3 class="impact-headline">Eliminación del 100% de Errores</h3>
+          <p class="impact-text">
+            Un error tipográfico en una prima o número de póliza en Excel provoca reclamos con las aseguradoras, retrasos de meses en liquidaciones bancarias o disputas con el cliente. La IA garantiza una captura exacta de datos contractuales.
+          </p>
+          <ul class="key-points">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Vinculación inmediata a cobranzas y recordatorios automáticos.</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Cobro puntual y exacto de comisiones bancarias.</li>
+          </ul>
+        </div>
+        <div class="impact-stat-box">
+          <span class="impact-stat-label">Errores de transcripción:</span>
+          <span class="impact-stat-val stat-green">0% Error Humano</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Pólizas • Extracción Inteligente • Visión por Computadora con IA</span>
+      <span>Diapositiva 05 / 10</span>
+    </div>
+  </section>
+
+  <!-- ================= SLIDE 6: EVALUADOR IA ================= -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="slide-section-tag">Módulo 4: Cierre de Ventas</div>
+        <h2 class="slide-title">Evaluador y Comparador de Pólizas con IA</h2>
+        <p class="slide-subtitle">Compara cotizaciones competidoras en segundos y obtén el argumento exacto para cerrar la venta.</p>
+      </div>
+      <div class="slide-logo-badge">Asistente Comercial</div>
+    </div>
+
+    <div class="slide-grid-2">
+      <div class="impact-card impact-card-time">
+        <div>
+          <div class="impact-badge-time">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Impacto en Tiempo
+          </div>
+          <h3 class="impact-headline">De 1 Hora de Lectura a 10 Segundos</h3>
+          <p class="impact-text">
+            Revisar condicionados, exclusiones y letras pequeñas de 2 cotizaciones distintas suele tomar más de 45 minutos. La IA lee ambos PDFs simultáneamente, extrae deducibles, clínicas preferenciales y entrega un cuadro comparativo listo.
+          </p>
+          <ul class="key-points">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Respuesta al prospecto en el mismo día (ventaja competitiva).</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Dictamen técnico redactado automáticamente por el motor de IA.</li>
+          </ul>
+        </div>
+        <div class="impact-stat-box">
+          <span class="impact-stat-label">Tiempo por comparativa:</span>
+          <span class="impact-stat-val stat-blue">10 Segundos</span>
+        </div>
+      </div>
+
+      <div class="impact-card impact-card-money">
+        <div>
+          <div class="impact-badge-money">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Impacto en Dinero
+          </div>
+          <h3 class="impact-headline">+40% en Tasa de Cierre Comercial</h3>
+          <p class="impact-text">
+            Los clientes indecisos no compran por precio, sino por claridad. Al presentarles un dictamen técnico objetivo que demuestra por qué una opción con deducible menor les ahorra dinero en siniestros, el cliente firma contigo de inmediato.
+          </p>
+          <ul class="key-points">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Mayor autoridad técnica y profesional frente a corredores tradicionales.</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Ingresos adicionales por cierre de pólizas de alto valor: <strong>+$3,000 / año</strong>.</li>
+          </ul>
+        </div>
+        <div class="impact-stat-box">
+          <span class="impact-stat-label">Aumento en cierre de cotizaciones:</span>
+          <span class="impact-stat-val stat-green">+40% Conversión</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Evaluador IA • Comparación Lado a Lado • Argumentos de Cierre</span>
+      <span>Diapositiva 06 / 10</span>
+    </div>
+  </section>
+
+  <!-- ================= SLIDE 7: RECORDATORIOS ================= -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="slide-section-tag">Módulo 5: Cobranzas y Retención</div>
+        <h2 class="slide-title">Recordatorios & Plan de Pagos Fraccionados</h2>
+        <p class="slide-subtitle">Avisos preventivos por WhatsApp para evitar la anulación de pólizas por cuotas impagas.</p>
+      </div>
+      <div class="slide-logo-badge">WhatsApp 1-Clic</div>
+    </div>
+
+    <div class="slide-grid-2">
+      <div class="impact-card impact-card-time">
+        <div>
+          <div class="impact-badge-time">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Impacto en Tiempo
+          </div>
+          <h3 class="impact-headline">Cobranza Automatizada en 1 Clic</h3>
+          <p class="impact-text">
+            Olvida llamar uno por uno o escribir mensajes manuales copiando montos y cuentas. El sistema clasifica los avisos (Vencen Hoy, Próximos 3 Días, 7 Días) y con solo tocar "Abrir en WhatsApp", genera el mensaje personalizado listo para enviar.
+          </p>
+          <ul class="key-points">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Desglose automático de pagos mensuales (12 cuotas) y trimestrales (4 cuotas).</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> 100% de la gestión de cobro del día realizada en menos de 10 minutos.</li>
+          </ul>
+        </div>
+        <div class="impact-stat-box">
+          <span class="impact-stat-label">Tiempo diario de gestión de cobro:</span>
+          <span class="impact-stat-val stat-blue">10 Minutos / Día</span>
+        </div>
+      </div>
+
+      <div class="impact-card impact-card-money">
+        <div>
+          <div class="impact-badge-money">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Impacto en Dinero
+          </div>
+          <h3 class="impact-headline">Rescate de $3,000+ en Comisiones</h3>
+          <p class="impact-text">
+            Cuando un asegurado se atrasa, la compañía rescinde el contrato y el corredor deja de cobrar las comisiones futuras. Rescatar apenas 2 pólizas medianas al mes representa <strong>salvar entre $3,000 y $5,000 anuales de ingresos netos</strong> para tu bolsillo.
+          </p>
+          <ul class="key-points">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Reducción drástica del 60% en caída de pólizas por mora.</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> El cliente agradece el recordatorio antes de quedarse sin cobertura.</li>
+          </ul>
+        </div>
+        <div class="impact-stat-box">
+          <span class="impact-stat-label">Comisiones salvadas al año:</span>
+          <span class="impact-stat-val stat-green">+$3,000 a $5,000 / año</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Recordatorios • Calendario Fraccionado • Integración WhatsApp Web</span>
+      <span>Diapositiva 07 / 10</span>
+    </div>
+  </section>
+
+  <!-- ================= SLIDE 8: ADMINISTRACION ================= -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="slide-section-tag">Módulo 6: Finanzas y Rentabilidad</div>
+        <h2 class="slide-title">Administración, Auditoría y Margen Operativo</h2>
+        <p class="slide-subtitle">Control de cobranzas liquidadas vs gastos variables con balance real en tiempo real.</p>
+      </div>
+      <div class="slide-logo-badge">Cierre en 1 Clic</div>
+    </div>
+
+    <div class="slide-grid-2">
+      <div class="impact-card impact-card-time">
+        <div>
+          <div class="impact-badge-time">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Impacto en Tiempo
+          </div>
+          <h3 class="impact-headline">Cierre Mensual Listo en 1 Clic</h3>
+          <p class="impact-text">
+            Llegar al fin de mes ya no significa noches en vela cruzando depósitos bancarios con recibos emitidos. El módulo de administración clasifica cobros liquidados, pendientes y gastos operativos, generando un reporte de cierre contable descargable.
+          </p>
+          <ul class="key-points">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Conciliación instantánea por mes con filtro rápido (2026-09).</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Exportación de reportes limpios para el contador o la firma.</li>
+          </ul>
+        </div>
+        <div class="impact-stat-box">
+          <span class="impact-stat-label">Tiempo de cierre contable mensual:</span>
+          <span class="impact-stat-val stat-blue">1 Clic (Instantáneo)</span>
+        </div>
+      </div>
+
+      <div class="impact-card impact-card-money">
+        <div>
+          <div class="impact-badge-money">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Impacto en Dinero
+          </div>
+          <h3 class="impact-headline">Auditoría Exacta a las Aseguradoras</h3>
+          <p class="impact-text">
+            ¿Sabías que muchas aseguradoras demoran semanas en transferir comisiones o aplican retenciones erróneas? El CRM mantiene la cuenta exacta de <strong>cobranzas por liquidar</strong> para exigir el pago completo a las compañías de seguro.
+          </p>
+          <ul class="key-points">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Relación visual en tiempo real: Ingresos Reales vs Gastos Variables.</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Margen de Rentabilidad Neta siempre a la vista para cuidar la caja.</li>
+          </ul>
+        </div>
+        <div class="impact-stat-box">
+          <span class="impact-stat-label">Comisiones no auditadas recuperadas:</span>
+          <span class="impact-stat-val stat-green">100% Auditado</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Administración • Conciliación Bancaria • Margen Operativo Real</span>
+      <span>Diapositiva 08 / 10</span>
+    </div>
+  </section>
+
+  <!-- ================= SLIDE 9: TABLA DE RETORNO (ROI) ================= -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="slide-section-tag">Cuantificación Financiera</div>
+        <h2 class="slide-title">Retorno de Inversión (ROI) para el Corredor</h2>
+        <p class="slide-subtitle">Comparativa directa: Costo de no tener el sistema vs Beneficio financiero real.</p>
+      </div>
+      <div class="slide-logo-badge">Rentabilidad Comprobada</div>
+    </div>
+
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:space-between;">
+      <table class="styled-table">
+        <thead>
+          <tr>
+            <th>Área / Proceso</th>
+            <th>Método Tradicional (Sin CRM)</th>
+            <th>Con el CRM Inteligente</th>
+            <th style="text-align:right;">Beneficio Anual</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Carga de Pólizas</strong></td>
+            <td>15 min por carátula (12+ horas al mes)</td>
+            <td>3 segundos con IA (98% reducción)</td>
+            <td style="text-align:right;font-weight:700;color:#0284c7;">150 Horas Liberadas</td>
+          </tr>
+          <tr>
+            <td><strong>Cobranza Fraccionada</strong></td>
+            <td>Llamadas manuales y pólizas anuladas</td>
+            <td>Avisos automáticos por WhatsApp</td>
+            <td style="text-align:right;font-weight:700;color:#16a34a;">+$3,200 en Comisiones</td>
+          </tr>
+          <tr>
+            <td><strong>Comparativa de Cotizaciones</strong></td>
+            <td>1 a 2 horas leyendo condicionados</td>
+            <td>Dictamen técnico en 10 segundos</td>
+            <td style="text-align:right;font-weight:700;color:#16a34a;">+40% en Nuevas Ventas</td>
+          </tr>
+          <tr>
+            <td><strong>Auditoría de Comisiones</strong></td>
+            <td>Comisiones olvidadas o no reclamadas</td>
+            <td>Control al centavo de recibos pendientes</td>
+            <td style="text-align:right;font-weight:700;color:#16a34a;">+$1,500 Recuperados</td>
+          </tr>
+          <tr>
+            <td><strong>Cierre de Mes y Gastos</strong></td>
+            <td>Días buscando comprobantes</td>
+            <td>Cierre mensual y rentabilidad en 1 clic</td>
+            <td style="text-align:right;font-weight:700;color:#0284c7;">50 Horas de Estrés Menos</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Resumen Cuantitativo -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:20px;">
+        <div style="background:var(--brand-gray);padding:16px;border-radius:14px;border:1px solid var(--brand-border);text-align:center;">
+          <div style="font-size:11px;font-weight:700;color:var(--brand-muted);text-transform:uppercase;">Tiempo Total Ahorrado</div>
+          <div style="font-size:24px;font-weight:900;color:#0284c7;margin-top:4px;">+200 Horas / Año</div>
+          <div style="font-size:11px;color:#64748b;margin-top:2px;">Equivalente a más de 1 mes laboral libre</div>
+        </div>
+        <div style="background:#f0fdf4;padding:16px;border-radius:14px;border:1.5px solid #bbf7d0;text-align:center;">
+          <div style="font-size:11px;font-weight:700;color:#15803d;text-transform:uppercase;">Incremento Neto Estimado</div>
+          <div style="font-size:24px;font-weight:900;color:#16a34a;margin-top:4px;">+$4,700 - $8,000</div>
+          <div style="font-size:11px;color:#15803d;margin-top:2px;">Por retención y comisiones rescatadas</div>
+        </div>
+        <div style="background:#fefce8;padding:16px;border-radius:14px;border:1.5px solid #fef08a;text-align:center;">
+          <div style="font-size:11px;font-weight:700;color:#a16207;text-transform:uppercase;">Período de Retorno (Payback)</div>
+          <div style="font-size:24px;font-weight:900;color:#ca8a04;margin-top:4px;">Menos de 30 Días</div>
+          <div style="font-size:11px;color:#a16207;margin-top:2px;">El sistema se paga solo desde el mes 1</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <span>Retorno de Inversión • Proyección de Rentabilidad para el Corredor</span>
+      <span>Diapositiva 09 / 10</span>
+    </div>
+  </section>
+
+  <!-- ================= SLIDE 10: CIERRE COMERCIAL ================= -->
+  <section class="slide slide-dark">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <span style="background:rgba(74,222,128,0.2);color:#4ade80;padding:6px 16px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:0.08em;border:1px solid rgba(74,222,128,0.3);">
+        TRANSFORMACIÓN DIGITAL INMEDIATA
+      </span>
+      <span style="font-size:11px;color:#94a3b8;font-weight:600;">CRM CORREDOR DE SEGUROS</span>
+    </div>
+
+    <div style="margin:auto 0;text-align:center;max-width:820px;margin-left:auto;margin-right:auto;">
+      <h2 style="font-size:36px;font-weight:900;line-height:1.2;color:white;margin-bottom:16px;">
+        Empieza a Gestionar tu Cartera con la Tecnología que <span style="color:#38bdf8;">Multiplica tus Ingresos</span>
+      </h2>
+      <p style="font-size:15px;color:#cbd5e1;line-height:1.6;margin-bottom:28px;">
+        Sin instalaciones complicadas. Acceso inmediato en la nube para ti y tu equipo desde cualquier computadora, tablet o teléfono móvil.
+      </p>
+
+      <!-- Caja de Acceso a Demo -->
+      <div style="background:rgba(255,255,255,0.08);border:1.5px dashed rgba(56,189,248,0.5);border-radius:18px;padding:22px;margin-bottom:28px;">
+        <div style="font-size:12px;color:#94a3b8;text-transform:uppercase;font-weight:800;letter-spacing:0.05em;margin-bottom:6px;">Prueba la Plataforma en Vivo Ahora Mismo:</div>
+        <a href="https://crm-seguros-demo.vercel.app" target="_blank" style="font-size:22px;font-weight:900;color:#38bdf8;text-decoration:none;display:inline-flex;align-items:center;gap:8px;">
+          https://crm-seguros-demo.vercel.app
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+      </div>
+
+      <div style="display:flex;justify-content:center;gap:24px;font-size:13px;color:#e2e8f0;">
+        <span style="display:flex;align-items:center;gap:6px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#4ade80" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Acceso 100% en la Nube</span>
+        <span style="display:flex;align-items:center;gap:6px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#4ade80" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Marca Blanca Personalizable</span>
+        <span style="display:flex;align-items:center;gap:6px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#4ade80" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Soporte y Capacitación</span>
+      </div>
+    </div>
+
+    <div class="slide-footer">
+      <div class="slide-footer-left">
+        <span>Agenda tu Demostración Personalizada</span>
+        <div class="slide-footer-dot"></div>
+        <span>Consultas y Comercialización</span>
+      </div>
+      <span>Diapositiva 10 / 10</span>
+    </div>
+  </section>
+
+</body>
+</html>

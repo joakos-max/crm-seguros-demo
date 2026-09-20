@@ -68,6 +68,10 @@
     <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
     <span class="font-bold text-gray-700">Demostración Comercial</span>
     <span class="text-gray-300">|</span>
+    <a href="Presentacion_Comercial_CRM_Seguros.pdf" download="Presentacion_Comercial_CRM_Seguros.pdf" target="_blank" class="px-2.5 py-1 rounded-xl font-semibold transition-all flex items-center space-x-1.5 bg-brand-teal text-white hover:bg-teal-700 shadow-xs">
+      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+      <span>Presentación PDF</span>
+    </a>
     <button onclick="toggleFeatureSpotsVisibility()" class="px-2.5 py-1 rounded-xl font-semibold transition-all flex items-center space-x-1.5 bg-brand-navy text-white hover:bg-slate-800">
       <span class="w-2 h-2 rounded-full bg-amber-400"></span>
       <span id="toggleSpotsText">Ocultar Puntos Explicativos (💡)</span>
@@ -138,6 +142,19 @@
           <svg class="w-[18px] h-[18px] text-gray-400 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
           <span class="text-sm">Configuración</span>
         </button>
+
+        <!-- Presentación Comercial PDF Direct Download -->
+        <div class="pt-3 border-t border-gray-100 mt-2">
+          <a href="Presentacion_Comercial_CRM_Seguros.pdf" target="_blank" download="Presentacion_Comercial_CRM_Seguros.pdf" class="w-full flex items-center space-x-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-brand-teal to-brand-navy hover:opacity-95 transition shadow-sm group">
+            <div class="w-6 h-6 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
+              <svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="12" y2="18"/><line x1="15" y1="15" x2="12" y2="18"/></svg>
+            </div>
+            <div class="flex flex-col text-left truncate">
+              <span class="leading-tight text-white">Presentación PDF</span>
+              <span class="text-[10px] text-teal-200 font-normal">Ahorro y ROI (10 págs)</span>
+            </div>
+          </a>
+        </div>
       </nav>
 
       <!-- Footer / Status (Idéntico a Manuel) -->
@@ -168,7 +185,11 @@
             <span id="mobileActiveTabTitle" class="text-xs font-bold text-brand-navy bg-blue-50/70 text-brand-teal px-2.5 py-1 rounded-lg border border-brand-teal/10">Dashboard</span>
           </div>
         </div>
-        <div class="flex items-center space-x-2">
+        <div class="flex items-center space-x-1.5">
+          <a href="Presentacion_Comercial_CRM_Seguros.pdf" download="Presentacion_Comercial_CRM_Seguros.pdf" target="_blank" class="px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold flex items-center space-x-1 shadow-xs" title="Descargar Presentación PDF">
+            <svg class="w-3.5 h-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+            <span class="text-[10px]">PDF</span>
+          </a>
           <button onclick="toggleFeatureSpotsVisibility()" class="px-2.5 py-1 rounded-full bg-brand-teal text-white text-xs font-bold flex items-center space-x-1 shadow-sm" title="Puntos Explicativos">
             <span>💡</span>
             <span class="text-[10px]">Guía</span>
@@ -1692,7 +1713,11 @@
         </div>
       </div>
 
-      <div class="p-4 bg-gray-50 border-t border-gray-100 flex justify-end">
+      <div class="p-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+        <a href="Presentacion_Comercial_CRM_Seguros.pdf" download="Presentacion_Comercial_CRM_Seguros.pdf" target="_blank" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition flex items-center space-x-1.5 shadow-sm">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          <span>Descargar Dossier Completo en PDF</span>
+        </a>
         <button onclick="closeRoiModal()" class="px-5 py-2 bg-brand-navy text-white text-xs font-bold rounded-xl hover:bg-brand-navy/90 transition">
           Cerrar
         </button>
