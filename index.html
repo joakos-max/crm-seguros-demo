@@ -79,14 +79,20 @@
   </div>
 
   <!-- ================= MAIN CRM CONTAINER ================= -->
-  <div class="flex h-screen bg-[#f8f9fa] overflow-hidden font-sans">
+  <div class="flex h-screen bg-[#f8f9fa] overflow-hidden font-sans relative">
 
-    <!-- ================= SIDEBAR (ESTRUCTURA IDÉNTICA A MANUEL MORILLO) ================= -->
-    <aside class="w-60 bg-white border-r border-gray-100 h-screen flex flex-col shadow-sm shrink-0 z-20">
+    <!-- Backdrop oscurecido para menú móvil -->
+    <div id="mobileSidebarBackdrop" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-30 hidden md:hidden transition-opacity duration-300"></div>
+
+    <!-- ================= SIDEBAR (DESKTOP ESTÁTICO + MOBILE DRAWER) ================= -->
+    <aside id="mainSidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-100 h-screen flex flex-col shadow-2xl md:shadow-sm transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out md:static md:w-60 shrink-0">
       
-      <!-- Brand area: Exactamente como está estructurado el CRM de Manuel con tu imagen oficial -->
-      <div class="py-5 px-3 border-b border-gray-100 flex flex-col justify-center items-center">
+      <!-- Brand area con botón de cerrar en móvil -->
+      <div class="py-5 px-4 border-b border-gray-100 flex justify-between md:justify-center items-center">
         <img src="tu-logo-aqui.jpg" alt="Tu Logo Aquí - Marca Blanca Personalizable" class="w-32 h-auto object-contain rounded-2xl shadow-sm border border-slate-100" />
+        <button onclick="toggleMobileMenu()" class="md:hidden p-1.5 rounded-xl text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors" aria-label="Cerrar menú">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
 
       <!-- Navigation: Las 7 secciones exactas de Manuel con sus iconos intactos -->
@@ -149,10 +155,53 @@
     </aside>
 
     <!-- ================= MAIN WORKSPACE ================= -->
-    <main class="flex-1 overflow-y-auto custom-scrollbar relative">
+    <main class="flex-1 overflow-y-auto custom-scrollbar relative flex flex-col min-w-0">
+
+      <!-- Mobile Top Bar (Solo visible en pantallas pequeñas < md) -->
+      <header class="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-gray-100 sticky top-0 z-20 shadow-xs shrink-0">
+        <div class="flex items-center space-x-3">
+          <button onclick="toggleMobileMenu()" class="p-2 -ml-1 rounded-xl text-brand-navy hover:bg-gray-100 active:scale-95 transition" aria-label="Abrir Menú">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <div class="flex items-center space-x-2">
+            <img src="tu-logo-aqui.jpg" alt="Logo" class="h-7 w-auto object-contain rounded-lg" />
+            <span id="mobileActiveTabTitle" class="text-xs font-bold text-brand-navy bg-blue-50/70 text-brand-teal px-2.5 py-1 rounded-lg border border-brand-teal/10">Dashboard</span>
+          </div>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="toggleFeatureSpotsVisibility()" class="px-2.5 py-1 rounded-full bg-brand-teal text-white text-xs font-bold flex items-center space-x-1 shadow-sm" title="Puntos Explicativos">
+            <span>💡</span>
+            <span class="text-[10px]">Guía</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Bottom Navigation Bar Móvil (Solo visible en < md) -->
+      <nav class="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-gray-200/80 px-2 py-1.5 flex justify-around items-center shadow-lg">
+        <button onclick="switchTab('dashboard')" id="bnav-dashboard" class="bnav-item flex flex-col items-center justify-center p-1 text-brand-teal font-semibold text-[10px] transition-colors">
+          <svg class="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+          <span>Inicio</span>
+        </button>
+        <button onclick="switchTab('clientes')" id="bnav-clientes" class="bnav-item flex flex-col items-center justify-center p-1 text-gray-400 text-[10px] transition-colors">
+          <svg class="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          <span>Clientes</span>
+        </button>
+        <button onclick="switchTab('polizas')" id="bnav-polizas" class="bnav-item flex flex-col items-center justify-center p-1 text-gray-400 text-[10px] transition-colors">
+          <svg class="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+          <span>Pólizas</span>
+        </button>
+        <button onclick="switchTab('recordatorios')" id="bnav-recordatorios" class="bnav-item flex flex-col items-center justify-center p-1 text-gray-400 text-[10px] transition-colors">
+          <svg class="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+          <span>Avisos</span>
+        </button>
+        <button onclick="toggleMobileMenu()" class="bnav-item flex flex-col items-center justify-center p-1 text-gray-400 text-[10px] transition-colors">
+          <svg class="w-5 h-5 mb-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <span>Menú</span>
+        </button>
+      </nav>
 
       <!-- ================= 1. TAB: DASHBOARD ================= -->
-      <div id="tab-dashboard" class="tab-pane p-8 space-y-8 animate-in fade-in duration-300">
+      <div id="tab-dashboard" class="tab-pane p-4 sm:p-6 md:p-8 pb-24 md:pb-8 space-y-6 sm:space-y-8 animate-in fade-in duration-300">
         
         <!-- Header con Punto de Explicación -->
         <div class="flex justify-between items-center">
@@ -334,7 +383,7 @@
       </div>
 
       <!-- ================= 2. TAB: CLIENTES ================= -->
-      <div id="tab-clientes" class="tab-pane hidden p-8 space-y-6 animate-in fade-in duration-300">
+      <div id="tab-clientes" class="tab-pane hidden p-4 sm:p-6 md:p-8 pb-24 md:pb-8 space-y-6 animate-in fade-in duration-300">
         
         <!-- Header con Puntos de Explicación -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -412,7 +461,7 @@
       </div>
 
       <!-- ================= 3. TAB: POLIZAS ================= -->
-      <div id="tab-polizas" class="tab-pane hidden p-8 space-y-6 animate-in fade-in duration-300">
+      <div id="tab-polizas" class="tab-pane hidden p-4 sm:p-6 md:p-8 pb-24 md:pb-8 space-y-6 animate-in fade-in duration-300">
         
         <!-- Header (Estructura idéntica a Manuel Morillo) -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -421,7 +470,7 @@
             <p class="text-gray-500 text-xs">Registra y clasifica las pólizas. Carga el archivo PDF para extracción automática.</p>
           </div>
           
-          <div class="flex items-center space-x-3">
+          <div class="flex flex-wrap items-center gap-2 sm:gap-3">
             <!-- PUNTO EXPLICATIVO 8 -->
             <div class="feature-spot relative inline-flex items-center group">
               <button onclick="toggleFeatureSpot(this, event)" class="w-5 h-5 rounded-full bg-brand-teal text-white flex items-center justify-center text-[10px] font-black hotspot-dot" title="Ver explicación">💡</button>
@@ -758,7 +807,7 @@
       </div>
 
       <!-- ================= 4. TAB: EVALUADOR IA ================= -->
-      <div id="tab-evaluador" class="tab-pane hidden p-8 space-y-6 animate-in fade-in duration-300">
+      <div id="tab-evaluador" class="tab-pane hidden p-4 sm:p-6 md:p-8 pb-24 md:pb-8 space-y-6 animate-in fade-in duration-300">
         
         <!-- Header -->
         <div class="flex items-center space-x-3">
@@ -828,7 +877,7 @@
       </div>
 
       <!-- ================= 5. TAB: RECORDATORIOS ================= -->
-      <div id="tab-recordatorios" class="tab-pane hidden p-8 space-y-6 animate-in fade-in duration-300">
+      <div id="tab-recordatorios" class="tab-pane hidden p-4 sm:p-6 md:p-8 pb-24 md:pb-8 space-y-6 animate-in fade-in duration-300">
         
         <!-- Header -->
         <div class="flex items-center space-x-3">
@@ -912,7 +961,7 @@
       </div>
 
       <!-- ================= 6. TAB: ADMINISTRACION (EXACTO A MANUEL + RELACIÓN COMISIONES VS GASTOS) ================= -->
-      <div id="tab-administracion" class="tab-pane hidden p-8 space-y-6 animate-in fade-in duration-300">
+      <div id="tab-administracion" class="tab-pane hidden p-4 sm:p-6 md:p-8 pb-24 md:pb-8 space-y-6 animate-in fade-in duration-300">
         
         <!-- Header con Botón de Exportar Cierre Mes y Selector de Mes -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-6 rounded-3xl shadow-sm border border-gray-100 gap-4">
@@ -1204,7 +1253,7 @@
       </div>
 
       <!-- ================= 7. TAB: CONFIGURACION ================= -->
-      <div id="tab-configuracion" class="tab-pane hidden p-8 space-y-6 animate-in fade-in duration-300">
+      <div id="tab-configuracion" class="tab-pane hidden p-4 sm:p-6 md:p-8 pb-24 md:pb-8 space-y-6 animate-in fade-in duration-300">
         
         <!-- Header -->
         <div class="flex items-center space-x-3">
@@ -1930,12 +1979,36 @@
       }
     });
 
-    // ================= NAVEGACION DE SECCIONES =================
+    // ================= NAVEGACION DE SECCIONES (DESKTOP Y MÓVIL) =================
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('mainSidebar');
+      const backdrop = document.getElementById('mobileSidebarBackdrop');
+      if (!sidebar || !backdrop) return;
+      const isClosed = sidebar.classList.contains('-translate-x-full');
+      if (isClosed) {
+        sidebar.classList.remove('-translate-x-full');
+        backdrop.classList.remove('hidden');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+      }
+    }
+
+    function closeMobileMenu() {
+      const sidebar = document.getElementById('mainSidebar');
+      const backdrop = document.getElementById('mobileSidebarBackdrop');
+      if (sidebar) sidebar.classList.add('-translate-x-full');
+      if (backdrop) backdrop.classList.add('hidden');
+    }
+
     function switchTab(tabId) {
+      closeMobileMenu();
+
       document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
       const activePane = document.getElementById(`tab-${tabId}`);
       if (activePane) activePane.classList.remove('hidden');
 
+      // Actualizar botones de navegación desktop
       document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.className = 'nav-btn w-full flex items-center space-x-3 px-3 py-2 rounded-xl transition-all duration-200 text-gray-500 hover:bg-gray-50 hover:text-brand-navy font-medium';
         const icon = btn.querySelector('svg');
@@ -1953,6 +2026,32 @@
           activeIcon.classList.remove('text-gray-400');
           activeIcon.classList.add('text-brand-teal');
         }
+      }
+
+      // Actualizar título en el Top Bar Móvil
+      const mobileTitle = document.getElementById('mobileActiveTabTitle');
+      if (mobileTitle) {
+        const titles = {
+          dashboard: 'Dashboard',
+          clientes: 'Clientes',
+          polizas: 'Pólizas',
+          evaluador: 'Evaluador IA',
+          recordatorios: 'Recordatorios',
+          administracion: 'Administración',
+          configuracion: 'Configuración'
+        };
+        mobileTitle.textContent = titles[tabId] || tabId;
+      }
+
+      // Actualizar botones en el Bottom Bar Móvil
+      document.querySelectorAll('.bnav-item').forEach(btn => {
+        btn.classList.remove('text-brand-teal', 'font-semibold');
+        btn.classList.add('text-gray-400');
+      });
+      const activeBnav = document.getElementById(`bnav-${tabId}`);
+      if (activeBnav) {
+        activeBnav.classList.remove('text-gray-400');
+        activeBnav.classList.add('text-brand-teal', 'font-semibold');
       }
 
       if (tabId === 'dashboard') {
