@@ -400,12 +400,13 @@
             <table class="w-full text-left border-collapse text-xs">
               <thead>
                 <tr class="text-gray-400 border-b border-gray-100 font-medium">
-                  <th class="pb-3 pr-4">Cliente</th>
-                  <th class="pb-3 pr-4">Póliza y Compañía</th>
-                  <th class="pb-3 pr-4">Monto</th>
-                  <th class="pb-3 pr-4">Vencimiento</th>
-                  <th class="pb-3 pr-4">Estado</th>
-                  <th class="pb-3 text-right">Acción</th>
+                  <th class="pb-3 pr-4 whitespace-nowrap">Cliente</th>
+                  <th class="pb-3 pr-4 whitespace-nowrap">Póliza y Compañía</th>
+                  <th class="pb-3 pr-4 whitespace-nowrap">Cuota por Vencer</th>
+                  <th class="pb-3 pr-4 whitespace-nowrap">Monto</th>
+                  <th class="pb-3 pr-4 whitespace-nowrap">Vencimiento</th>
+                  <th class="pb-3 pr-4 whitespace-nowrap">Tiempo a Vencer</th>
+                  <th class="pb-3 text-right whitespace-nowrap">Acción</th>
                 </tr>
               </thead>
               <tbody id="dashboardRemindersTbody" class="divide-y divide-gray-50">
@@ -1175,7 +1176,7 @@
                     <tr class="text-gray-400 border-b border-gray-100 font-medium">
                       <th class="pb-3 pr-4 whitespace-nowrap">Cliente</th>
                       <th class="pb-3 pr-4 whitespace-nowrap">Aseguradora</th>
-                      <th class="pb-3 pr-4 whitespace-nowrap">Ramo</th>
+                      <th class="pb-3 pr-4 whitespace-nowrap">Producto</th>
                       <th class="pb-3 pr-4 whitespace-nowrap">Cuota</th>
                       <th class="pb-3 pr-4 whitespace-nowrap">Fecha Cobro</th>
                       <th class="pb-3 pr-4 text-right text-brand-teal font-bold whitespace-nowrap">Monto Cobrado</th>
@@ -1255,9 +1256,15 @@
 
               <!-- Inline Variable Expense Form -->
               <div id="adminVarForm" class="hidden mb-6 bg-brand-navy/5 p-4 rounded-2xl border border-brand-navy/10 space-y-4">
-                <div>
-                  <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Descripción</label>
-                  <input type="text" id="newExpenseDesc" placeholder="Almuerzo cliente, combustible..." class="w-full px-3 py-2 text-xs rounded-xl border border-gray-300 focus:ring-brand-teal focus:border-brand-teal outline-none">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div class="sm:col-span-2">
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Descripción</label>
+                    <input type="text" id="newExpenseDesc" placeholder="Almuerzo cliente, combustible..." class="w-full px-3 py-2 text-xs rounded-xl border border-gray-300 focus:ring-brand-teal focus:border-brand-teal outline-none">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-gray-600 uppercase mb-1">Factura (Nº de Factura)</label>
+                    <input type="text" id="newExpenseInvoice" placeholder="Ej. FAC-00492" class="w-full px-3 py-2 text-xs rounded-xl border border-gray-300 focus:ring-brand-teal focus:border-brand-teal outline-none">
+                  </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                   <div>
@@ -1324,28 +1331,42 @@
 
           <!-- Form to add new commission rule -->
           <div id="addRuleFormBox" class="hidden bg-brand-navy/5 p-4 rounded-2xl border border-brand-navy/10 space-y-4">
-            <h4 class="text-xs font-black uppercase text-brand-navy tracking-wider">Añadir Regla de Comisión</h4>
-            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+            <h4 class="text-xs font-black uppercase text-brand-navy tracking-wider">Añadir Regla de Comisión y Bonificaciones</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
               <div>
                 <label class="block font-bold text-gray-700 mb-1">Aseguradora</label>
                 <input type="text" id="ruleCompanyInput" placeholder="Ej. Seguros Caracas" class="w-full px-3 py-2 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-brand-teal/20">
               </div>
               <div>
-                <label class="block font-bold text-gray-700 mb-1">Ramo / Tipo</label>
-                <input type="text" id="ruleTypeInput" placeholder="Ej. Salud Colectivo" class="w-full px-3 py-2 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-brand-teal/20">
+                <label class="block font-bold text-gray-700 mb-1">Ramo</label>
+                <input type="text" id="ruleRamoInput" placeholder="Ej. Salud" class="w-full px-3 py-2 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-brand-teal/20">
               </div>
               <div>
-                <label class="block font-bold text-gray-700 mb-1">% Comisión Corredor</label>
+                <label class="block font-bold text-gray-700 mb-1">Tipo de Póliza</label>
+                <input type="text" id="rulePolicyTypeInput" placeholder="Ej. Colectivo / Individual" class="w-full px-3 py-2 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-brand-teal/20">
+              </div>
+              <div>
+                <label class="block font-bold text-gray-700 mb-1">% Comisión</label>
                 <input type="number" step="0.5" id="ruleCommissionInput" placeholder="20.0" class="w-full px-3 py-2 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-brand-teal/20">
               </div>
               <div>
-                <label class="block font-bold text-gray-700 mb-1">% Retención ISLR</label>
-                <input type="number" step="0.1" id="ruleTaxInput" placeholder="2.0" class="w-full px-3 py-2 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-brand-teal/20">
+                <label class="block font-bold text-gray-700 mb-1">% Bono Cobranza</label>
+                <input type="number" step="0.5" id="ruleBonusCobranzaInput" placeholder="2.5" class="w-full px-3 py-2 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-brand-teal/20">
+              </div>
+              <div>
+                <label class="block font-bold text-gray-700 mb-1">% Bono Convenio</label>
+                <input type="number" step="0.5" id="ruleBonusConvenioInput" placeholder="3.0" class="w-full px-3 py-2 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-brand-teal/20">
               </div>
             </div>
-            <div class="flex justify-end space-x-2 pt-2">
-              <button onclick="toggleAddRuleForm()" class="px-3 py-1.5 text-xs text-gray-600 hover:bg-gray-200 rounded-xl font-medium">Cancelar</button>
-              <button onclick="saveCommissionRule()" class="px-4 py-1.5 text-xs bg-brand-navy text-white rounded-xl font-bold hover:bg-slate-800">Guardar Regla</button>
+            <div class="flex justify-between items-center pt-2">
+              <div class="flex items-center space-x-2">
+                <label class="font-bold text-gray-700 text-xs">% Retención ISLR:</label>
+                <input type="number" step="0.1" id="ruleTaxInput" value="3.0" class="w-20 px-2 py-1 border border-gray-300 rounded-lg text-xs outline-none">
+              </div>
+              <div class="flex space-x-2">
+                <button onclick="toggleAddRuleForm()" class="px-3 py-1.5 text-xs text-gray-600 hover:bg-gray-200 rounded-xl font-medium">Cancelar</button>
+                <button onclick="saveCommissionRule()" class="px-4 py-1.5 text-xs bg-brand-navy text-white rounded-xl font-bold hover:bg-slate-800">Guardar Regla</button>
+              </div>
             </div>
           </div>
 
@@ -1353,11 +1374,14 @@
             <table class="w-full text-left border-collapse text-xs">
               <thead>
                 <tr class="text-gray-400 border-b border-gray-100 font-medium">
-                  <th class="pb-3 pr-4">Aseguradora</th>
-                  <th class="pb-3 pr-4">Ramo / Tipo de Póliza</th>
-                  <th class="pb-3 pr-4 text-right">Comisión Bruta (%)</th>
-                  <th class="pb-3 pr-4 text-right">Retención ISLR (%)</th>
-                  <th class="pb-3 text-right">Acción</th>
+                  <th class="pb-3 pr-4 whitespace-nowrap">Aseguradora</th>
+                  <th class="pb-3 pr-4 whitespace-nowrap">Ramo</th>
+                  <th class="pb-3 pr-4 whitespace-nowrap">Tipo de Póliza</th>
+                  <th class="pb-3 pr-4 text-right whitespace-nowrap">Comisión %</th>
+                  <th class="pb-3 pr-4 text-right whitespace-nowrap">Bono Cobranza %</th>
+                  <th class="pb-3 pr-4 text-right whitespace-nowrap">Bono Convenio %</th>
+                  <th class="pb-3 pr-4 text-right whitespace-nowrap">Retención ISLR %</th>
+                  <th class="pb-3 text-right whitespace-nowrap">Acción</th>
                 </tr>
               </thead>
               <tbody id="commissionRulesTbody" class="divide-y divide-gray-50">
@@ -1386,6 +1410,24 @@
           </div>
           <div id="apiKeyStatusBadge" class="text-xs font-semibold text-gray-500">
             <!-- Populated on load -->
+          </div>
+        </div>
+
+        <!-- Mantenimiento y Restablecimiento de Datos Demo -->
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+              </div>
+              <div>
+                <h3 class="font-bold text-brand-navy text-sm">Restablecer Datos de Demostración</h3>
+                <p class="text-xs text-gray-400">Restaura la cartera a su estado inicial de 11 clientes y 15 pólizas limpias para una nueva reunión comercial.</p>
+              </div>
+            </div>
+            <button onclick="resetDemoData()" class="px-4 py-2 bg-gray-100 hover:bg-rose-50 hover:text-rose-600 text-gray-600 text-xs font-bold rounded-xl transition border border-gray-200">
+              Restablecer Datos Demo
+            </button>
           </div>
         </div>
 
@@ -1451,7 +1493,10 @@
   <div id="clientEditModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm hidden" onclick="closeClientModal()">
     <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden border border-gray-100" onclick="event.stopPropagation()">
       <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-        <h3 id="clientEditModalTitle" class="text-lg font-bold text-brand-navy">Registrar Asegurado</h3>
+        <div>
+          <h3 id="clientEditModalTitle" class="text-lg font-bold text-brand-navy">Registrar Asegurado</h3>
+          <p class="text-[11px] text-gray-400">Expediente de cliente para control de cartera y cobranza</p>
+        </div>
         <button onclick="closeClientModal()" class="text-gray-400 hover:text-gray-600">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
@@ -1459,18 +1504,22 @@
       <form onsubmit="event.preventDefault(); saveClientForm();" class="p-6 space-y-4 text-xs">
         <input type="hidden" id="editClientId">
         <div>
-          <label class="block font-medium text-gray-700 mb-1">Nombre o Razón Social</label>
-          <input type="text" id="editClientName" required placeholder="Ej. Roberto Castillo" class="w-full px-3.5 py-2 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-teal/20 focus:border-brand-teal">
+          <label class="block font-medium text-gray-700 mb-1">Nombre o Razón Social (Sin títulos profesionales)</label>
+          <input type="text" id="editClientName" required placeholder="Ej. Carlos Eduardo Vargas" class="w-full px-3.5 py-2 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-teal/20 focus:border-brand-teal">
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block font-medium text-gray-700 mb-1">Cédula o RIF</label>
-            <input type="text" id="editClientDoc" required placeholder="V-14.280.912 o J-..." class="w-full px-3.5 py-2 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-teal/20 focus:border-brand-teal">
+            <input type="text" id="editClientDoc" required placeholder="V-14.280.912 o J-30..." class="w-full px-3.5 py-2 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-teal/20 focus:border-brand-teal">
           </div>
           <div>
             <label class="block font-medium text-gray-700 mb-1">Teléfono Móvil</label>
             <input type="tel" id="editClientPhone" placeholder="+58 414 1234567" class="w-full px-3.5 py-2 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-teal/20 focus:border-brand-teal">
           </div>
+        </div>
+        <div>
+          <label class="block font-medium text-gray-700 mb-1">Dirección Fiscal / Habitación</label>
+          <input type="text" id="editClientAddress" placeholder="Ej. Av. Francisco de Miranda, Torre Cavendes, Piso 8, Chacao" class="w-full px-3.5 py-2 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-teal/20 focus:border-brand-teal">
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
@@ -1485,9 +1534,36 @@
             </select>
           </div>
         </div>
+
+        <!-- Sección SUDEASEG / AML Cumplimiento -->
+        <div class="p-3 bg-amber-50/60 rounded-2xl border border-amber-200/60 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-amber-900 flex items-center gap-1.5 text-[11px]">
+              <svg class="w-4 h-4 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span>Recaudos KYC / SUDEASEG (Prevención LC/FT)</span>
+            </span>
+            <span class="text-[10px] text-amber-700 font-semibold bg-amber-100 px-2 py-0.5 rounded-full">Normativa Activa</span>
+          </div>
+          <p class="text-[10px] text-amber-800/80 leading-tight">Expediente digital obligatorio según providencias de conocimiento del cliente (Cédula/RIF/Acta Constitutiva).</p>
+          <div class="grid grid-cols-3 gap-2 pt-1">
+            <div class="bg-white p-2 rounded-xl border border-amber-200 text-center">
+              <span class="block text-[10px] font-bold text-gray-700">📄 Cédula / RIF</span>
+              <span class="text-[9px] text-emerald-600 font-semibold">Cargado ✓</span>
+            </div>
+            <div class="bg-white p-2 rounded-xl border border-amber-200 text-center">
+              <span class="block text-[10px] font-bold text-gray-700">🏢 Acta Const.</span>
+              <span class="text-[9px] text-brand-teal font-semibold">Opcional</span>
+            </div>
+            <div class="bg-white p-2 rounded-xl border border-amber-200 text-center">
+              <span class="block text-[10px] font-bold text-gray-700">✍️ Ficha KYC</span>
+              <span class="text-[9px] text-emerald-600 font-semibold">Conforme ✓</span>
+            </div>
+          </div>
+        </div>
+
         <div class="flex justify-end pt-3 space-x-2">
           <button type="button" onclick="closeClientModal()" class="px-4 py-2 rounded-xl text-gray-500 font-semibold hover:bg-gray-100">Cancelar</button>
-          <button type="submit" class="bg-brand-navy hover:bg-brand-navy/90 text-white px-5 py-2 rounded-xl font-bold transition">Guardar Cliente</button>
+          <button type="submit" class="bg-brand-navy hover:bg-brand-navy/90 text-white px-5 py-2 rounded-xl font-bold transition">Aceptar</button>
         </div>
       </form>
     </div>
@@ -1495,7 +1571,7 @@
 
   <!-- ================= MODAL: EXPEDIENTE CLIENTE ================= -->
   <div id="clientDetailModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm hidden" onclick="closeClientDetail()">
-    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden" onclick="event.stopPropagation()">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[88vh] flex flex-col overflow-hidden" onclick="event.stopPropagation()">
       <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
         <div>
           <h3 id="modalClientName" class="text-xl font-bold text-brand-navy">Nombre Cliente</h3>
@@ -1506,22 +1582,50 @@
         </button>
       </div>
       <div class="p-6 overflow-y-auto space-y-4 text-xs">
-        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl">
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-gray-50 p-4 rounded-xl">
           <div>
-            <span class="text-gray-400 block">Teléfono Móvil</span>
-            <span id="modalClientPhone" class="font-bold text-gray-800 block text-sm">+58 000 0000000</span>
+            <span class="text-gray-400 block text-[11px]">Teléfono Móvil</span>
+            <span id="modalClientPhone" class="font-bold text-gray-800 block text-xs">+58 000 0000000</span>
           </div>
           <div>
-            <span class="text-gray-400 block">Correo Electrónico</span>
-            <span id="modalClientEmail" class="font-bold text-gray-800 block text-sm">correo@ejemplo.com</span>
+            <span class="text-gray-400 block text-[11px]">Correo Electrónico</span>
+            <span id="modalClientEmail" class="font-bold text-gray-800 block text-xs">correo@ejemplo.com</span>
+          </div>
+          <div class="col-span-2 sm:col-span-1">
+            <span class="text-gray-400 block text-[11px]">Dirección Registrada</span>
+            <span id="modalClientAddress" class="font-medium text-gray-700 block text-xs truncate">Caracas, Venezuela</span>
           </div>
           <div>
-            <span class="text-gray-400 block">Total Pólizas</span>
+            <span class="text-gray-400 block text-[11px]">Total Pólizas</span>
             <span id="modalClientPoliciesCount" class="font-bold text-brand-teal block text-sm">0</span>
           </div>
           <div>
-            <span class="text-gray-400 block">Prima Anual Total</span>
+            <span class="text-gray-400 block text-[11px]">Prima Anual Total</span>
             <span id="modalClientTotalPremium" class="font-bold text-brand-navy block text-sm">$0.00</span>
+          </div>
+          <div>
+            <span class="text-gray-400 block text-[11px]">Estatus SUDEASEG / LC/FT</span>
+            <span class="inline-flex items-center gap-1 font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full text-[10px] border border-emerald-200 mt-0.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              <span>Expediente Conforme</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Documentos de Identificación y Cumplimiento SUDEASEG -->
+        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-brand-navy flex items-center gap-2 text-xs">
+              <svg class="w-4 h-4 text-brand-teal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              <span>Documentos y Cumplimiento SUDEASEG (KYC / LC/FT)</span>
+            </h4>
+            <button type="button" onclick="simUploadKycDoc()" class="text-[10px] font-bold text-brand-teal bg-white hover:bg-brand-teal hover:text-white px-2.5 py-1 rounded-lg border border-brand-teal/30 transition-colors flex items-center gap-1">
+              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span>+ Adjuntar Recaudo</span>
+            </button>
+          </div>
+          <div id="modalClientKycDocs" class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+            <!-- Populated dynamically -->
           </div>
         </div>
 
@@ -1539,27 +1643,35 @@
     </div>
   </div>
 
-
-
   <!-- ================= MODAL: REGISTRO MANUAL DE POLIZA ================= -->
   <div id="manualPolicyModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm hidden" onclick="closeManualPolicyModal()">
     <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden border border-gray-100" onclick="event.stopPropagation()">
       <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-        <h3 class="text-lg font-bold text-brand-navy">Registrar Póliza Manual</h3>
+        <div>
+          <h3 class="text-lg font-bold text-brand-navy">Registrar Póliza Manual</h3>
+          <p class="text-[11px] text-gray-400">Emisión directa y vinculación inmediata a cartera y cobranzas</p>
+        </div>
         <button onclick="closeManualPolicyModal()" class="text-gray-400 hover:text-gray-600">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
       <form onsubmit="event.preventDefault(); saveManualPolicyForm();" class="p-6 space-y-4 text-xs">
-        <div>
-          <label class="block font-medium text-gray-700 mb-1">Cliente Asegurado</label>
-          <select id="manualPolicyClientId" required class="w-full px-3.5 py-2 border border-gray-200 rounded-xl outline-none bg-white">
-            <!-- Populated dynamically with current clients -->
-          </select>
-        </div>
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="block font-medium text-gray-700 mb-1">Aseguradora</label>
+            <label class="block font-medium text-gray-700 mb-1">Cliente Asegurado (Escribir o Seleccionar)</label>
+            <input type="text" id="manualPolicyClientName" list="clientsDatalist" oninput="onManualClientNameInput(this.value)" required placeholder="Nombre / Razón Social..." class="w-full px-3.5 py-2 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-teal/20">
+            <datalist id="clientsDatalist">
+              <!-- Populated dynamically -->
+            </datalist>
+          </div>
+          <div>
+            <label class="block font-medium text-gray-700 mb-1">Cédula o RIF del Asegurado</label>
+            <input type="text" id="manualPolicyClientDoc" required placeholder="V-00.000.000 o J-00000000-0" class="w-full px-3.5 py-2 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-brand-teal/20">
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-medium text-gray-700 mb-1">Compañía Aseguradora</label>
             <select id="manualPolicyCompany" class="w-full px-3.5 py-2 border border-gray-200 rounded-xl outline-none bg-white">
               <option value="Seguros Pirámide">Seguros Pirámide</option>
               <option value="Seguros Caracas">Seguros Caracas</option>
@@ -1569,13 +1681,21 @@
             </select>
           </div>
           <div>
-            <label class="block font-medium text-gray-700 mb-1">Ramo de Seguro</label>
-            <select id="manualPolicyType" class="w-full px-3.5 py-2 border border-gray-200 rounded-xl outline-none bg-white">
-              <option value="Salud">Salud / HCM</option>
-              <option value="Auto">Automóvil / R.C.V</option>
-              <option value="Patrimoniales">Patrimoniales / Incendio</option>
-              <option value="Fianzas">Fianzas</option>
-              <option value="Vida">Vida</option>
+            <label class="block font-medium text-gray-700 mb-1">Producto de Seguro</label>
+            <select id="manualPolicyType" class="w-full px-3.5 py-2 border border-gray-200 rounded-xl outline-none bg-white font-medium">
+              <option value="Auto Individual">Auto Individual</option>
+              <option value="Auto Flota">Auto Flota</option>
+              <option value="Salud Individual" selected>Salud Individual</option>
+              <option value="Salud Colectivo">Salud Colectivo</option>
+              <option value="Vida Individual">Vida Individual</option>
+              <option value="Vida Colectivo">Vida Colectivo</option>
+              <option value="Accidentes Personales Individual">Accidentes Personales Individual</option>
+              <option value="Accidentes Personales Colectivo">Accidentes Personales Colectivo</option>
+              <option value="Funerario Individual">Funerario Individual</option>
+              <option value="Funerario Colectivo">Funerario Colectivo</option>
+              <option value="AP Escolar">AP Escolar</option>
+              <option value="Patrimoniales">Patrimoniales</option>
+              <option value="Fianza">Fianza</option>
             </select>
           </div>
         </div>
@@ -1612,33 +1732,36 @@
     </div>
   </div>
 
-  <!-- ================= MODAL: DESGLOSE DASHBOARD ================= -->
+  <!-- ================= MODAL: DESGLOSE DASHBOARD (4 VISTAS INDEPENDIENTES) ================= -->
   <div id="breakdownModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm hidden" onclick="closeBreakdownModal()">
-    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-xl overflow-hidden border border-gray-100" onclick="event.stopPropagation()">
-      <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-        <h3 id="breakdownModalTitle" class="text-base font-bold text-brand-navy">Desglose Detallado</h3>
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden border border-gray-100 flex flex-col max-h-[85vh]" onclick="event.stopPropagation()">
+      <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 shrink-0">
+        <div>
+          <h3 id="breakdownModalTitle" class="text-base font-bold text-brand-navy">Desglose Detallado</h3>
+          <p id="breakdownModalSubtitle" class="text-xs text-gray-400 mt-0.5">Información específica del indicador seleccionado</p>
+        </div>
         <button onclick="closeBreakdownModal()" class="text-gray-400 hover:text-gray-600">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>
-      <div class="p-6 overflow-y-auto max-h-[70vh] text-xs">
-        <table class="w-full text-left border-collapse">
-          <thead>
-            <tr class="text-gray-400 border-b border-gray-100 pb-2">
-              <th class="pb-2">Compañía</th>
-              <th class="pb-2">Ramo</th>
-              <th class="pb-2 text-center">Pólizas</th>
-              <th class="pb-2 text-right">Prima Total</th>
-              <th class="pb-2 text-right">Comisión Proyectada</th>
-            </tr>
-          </thead>
-          <tbody id="breakdownTableTbody" class="divide-y divide-gray-50">
-            <!-- Populated dynamically -->
-          </tbody>
-        </table>
+      <div class="p-6 overflow-y-auto flex-1 text-xs">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead id="breakdownTableThead">
+              <!-- Populated dynamically per KPI type -->
+            </thead>
+            <tbody id="breakdownTableTbody" class="divide-y divide-gray-50">
+              <!-- Populated dynamically -->
+            </tbody>
+            <tfoot id="breakdownTableTfoot">
+              <!-- Populated dynamically for totals -->
+            </tfoot>
+          </table>
+        </div>
       </div>
-      <div class="p-4 bg-gray-50 border-t border-gray-100 flex justify-end">
-        <button onclick="closeBreakdownModal()" class="px-4 py-2 bg-brand-navy text-white text-xs font-bold rounded-xl hover:bg-brand-navy/90">Cerrar</button>
+      <div class="p-4 bg-gray-50 border-t border-gray-100 flex justify-between items-center shrink-0 text-xs">
+        <span id="breakdownModalCounter" class="text-gray-400 font-medium">Registros cargados</span>
+        <button onclick="closeBreakdownModal()" class="px-5 py-2 bg-brand-navy text-white text-xs font-bold rounded-xl hover:bg-brand-navy/90 transition shadow-sm">Cerrar</button>
       </div>
     </div>
   </div>
@@ -1741,38 +1864,38 @@
 
   <!-- ================= JAVASCRIPT ENGINE & STATE ================= -->
   <script>
-    // 11 Clientes Ficticios Realistas
+    // 11 Clientes Ficticios Realistas (Sin títulos profesionales según solicitud de intermediarios)
     const initialClients = [
-      { id: 'c1', name: 'Inversiones Monte Alto C.A.', doc: 'J-31489201-4', phone: '+58 414-382-9012', email: 'contacto@montealto.com', paymentStatus: 'Moroso' },
-      { id: 'c2', name: 'Dr. Carlos Eduardo Vargas', doc: 'V-12.890.312', phone: '+58 412-901-4455', email: 'dr.vargas@clinica.com', paymentStatus: 'Al día' },
-      { id: 'c3', name: 'Mariana Benítez Silva', doc: 'V-19.450.881', phone: '+58 424-771-3091', email: 'm.benitez@gmail.com', paymentStatus: 'Al día' },
-      { id: 'c4', name: 'Constructora Horizonte 2020 C.A.', doc: 'J-40918231-0', phone: '+58 414-229-8810', email: 'administracion@horizonte2020.com', paymentStatus: 'Al día' },
-      { id: 'c5', name: 'Lic. Gabriela Mendoza', doc: 'V-16.712.904', phone: '+58 416-550-1122', email: 'gmendoza@asesores.com', paymentStatus: 'Al día' },
-      { id: 'c6', name: 'Transporte Ávila Express C.A.', doc: 'J-29831940-2', phone: '+58 412-334-9988', email: 'operaciones@avilaexpress.com', paymentStatus: 'Moroso' },
-      { id: 'c7', name: 'Ing. Roberto Alejandro Gómez', doc: 'V-14.309.211', phone: '+58 424-889-1234', email: 'roberto.gomez@ingenieria.ve', paymentStatus: 'Al día' },
-      { id: 'c8', name: 'Alimentos El Trébol S.R.L.', doc: 'J-50192834-8', phone: '+58 414-772-0044', email: 'gerencia@eltrebol.com', paymentStatus: 'Al día' },
-      { id: 'c9', name: 'Dra. Valentina Domínguez', doc: 'V-20.182.744', phone: '+58 412-441-7720', email: 'v.dominguez@odontosalud.com', paymentStatus: 'Al día' },
-      { id: 'c10', name: 'Fernando José Quintero', doc: 'V-11.604.992', phone: '+58 424-902-3311', email: 'fquintero@inversiones.com', paymentStatus: 'Al día' },
-      { id: 'c11', name: 'Farmacias Unidas del Centro C.A.', doc: 'J-30491822-6', phone: '+58 414-998-1155', email: 'compras@farmaciasunidas.com', paymentStatus: 'Al día' }
+      { id: 'c1', name: 'Inversiones Monte Alto C.A.', doc: 'J-31489201-4', address: 'Av. Francisco de Miranda, Torre Cavendes, Piso 8, Chacao, Caracas', phone: '+58 414-382-9012', email: 'contacto@montealto.com', paymentStatus: 'Moroso' },
+      { id: 'c2', name: 'Carlos Eduardo Vargas', doc: 'V-12.890.312', address: 'Urb. Santa Mónica, Av. Teresa de la Parra, Qta. Los Rosales, Caracas', phone: '+58 412-901-4455', email: 'carlos.vargas@correo.com', paymentStatus: 'Al día' },
+      { id: 'c3', name: 'Mariana Benítez Silva', doc: 'V-19.450.881', address: 'Urb. Las Mercedes, Calle París, Edif. Humboldt, Apto 4-B, Caracas', phone: '+58 424-771-3091', email: 'm.benitez@gmail.com', paymentStatus: 'Al día' },
+      { id: 'c4', name: 'Constructora Horizonte 2020 C.A.', doc: 'J-40918231-0', address: 'Av. Venezuela, El Rosal, Edif. Provincial, Torre B, Caracas', phone: '+58 414-229-8810', email: 'administracion@horizonte2020.com', paymentStatus: 'Al día' },
+      { id: 'c5', name: 'Gabriela Mendoza', doc: 'V-16.712.904', address: 'Av. Libertador, Centro Empresarial La Candelaria, Ofic. 302, Caracas', phone: '+58 416-550-1122', email: 'gmendoza@asesores.com', paymentStatus: 'Al día' },
+      { id: 'c6', name: 'Transporte Ávila Express C.A.', doc: 'J-29831940-2', address: 'Zona Industrial La Trinidad, Calle 3, Galpón 14, Baruta, Caracas', phone: '+58 412-334-9988', email: 'operaciones@avilaexpress.com', paymentStatus: 'Moroso' },
+      { id: 'c7', name: 'Roberto Alejandro Gómez', doc: 'V-14.309.211', address: 'Av. Francisco Solano, Torre Solano Plaza, Sabana Grande, Caracas', phone: '+58 424-889-1234', email: 'roberto.gomez@ingenieria.ve', paymentStatus: 'Al día' },
+      { id: 'c8', name: 'Alimentos El Trébol S.R.L.', doc: 'J-50192834-8', address: 'Boleíta Norte, 2da Transversal, Centro Industrial El Trébol, Caracas', phone: '+58 414-772-0044', email: 'gerencia@eltrebol.com', paymentStatus: 'Al día' },
+      { id: 'c9', name: 'Valentina Domínguez', doc: 'V-20.182.744', address: 'Colinas de Bello Monte, Av. Leonardo Da Vinci, Torre Domínguez, Caracas', phone: '+58 412-441-7720', email: 'v.dominguez@odontosalud.com', paymentStatus: 'Al día' },
+      { id: 'c10', name: 'Fernando José Quintero', doc: 'V-11.604.992', address: 'Urb. Los Palos Grandes, 4ta Avenida, Res. Monte Verde, Caracas', phone: '+58 424-902-3311', email: 'fquintero@inversiones.com', paymentStatus: 'Al día' },
+      { id: 'c11', name: 'Farmacias Unidas del Centro C.A.', doc: 'J-30491822-6', address: 'Av. Urdaneta, Esq. Veroes a Jesuitas, Edf. Farmacias, Caracas', phone: '+58 414-998-1155', email: 'compras@farmaciasunidas.com', paymentStatus: 'Al día' }
     ];
 
-    // 15 Pólizas asociadas a los clientes ficticios (con frecuencias Mensual, Trimestral, Semestral y Anual)
+    // 15 Pólizas asociadas a los clientes ficticios
     const initialPolicies = [
-      { id: 'p1', clientId: 'c1', clientName: 'Inversiones Monte Alto C.A.', policyNumber: 'POL-PIR-98210', company: 'Seguros Pirámide', type: 'Salud', validityStart: '2026-06-21', validityEnd: '2027-06-21', paymentMode: 'Trimestral (4 cuotas)', premium: 3200, commissionRate: 20 },
-      { id: 'p2', clientId: 'c1', clientName: 'Inversiones Monte Alto C.A.', policyNumber: 'POL-PIR-98211', company: 'Seguros Pirámide', type: 'Auto', validityStart: '2026-08-10', validityEnd: '2027-08-10', paymentMode: 'Semestral (2 cuotas)', premium: 980, commissionRate: 15 },
+      { id: 'p1', clientId: 'c1', clientName: 'Inversiones Monte Alto C.A.', policyNumber: 'POL-PIR-98210', company: 'Seguros Pirámide', type: 'Salud Colectivo', validityStart: '2026-06-21', validityEnd: '2027-06-21', paymentMode: 'Trimestral (4 cuotas)', premium: 3200, commissionRate: 20 },
+      { id: 'p2', clientId: 'c1', clientName: 'Inversiones Monte Alto C.A.', policyNumber: 'POL-PIR-98211', company: 'Seguros Pirámide', type: 'Auto Flota', validityStart: '2026-08-10', validityEnd: '2027-08-10', paymentMode: 'Semestral (2 cuotas)', premium: 980, commissionRate: 15 },
       { id: 'p3', clientId: 'c1', clientName: 'Inversiones Monte Alto C.A.', policyNumber: 'POL-OCE-11029', company: 'Seguros Oceánica', type: 'Patrimoniales', validityStart: '2026-03-01', validityEnd: '2027-03-01', paymentMode: 'Anual (Contado)', premium: 670, commissionRate: 18 },
-      { id: 'p4', clientId: 'c2', clientName: 'Dr. Carlos Eduardo Vargas', policyNumber: 'POL-CAR-44102', company: 'Seguros Caracas', type: 'Salud', validityStart: '2026-03-19', validityEnd: '2027-03-19', paymentMode: 'Semestral (2 cuotas)', premium: 960, commissionRate: 20 },
-      { id: 'p5', clientId: 'c2', clientName: 'Dr. Carlos Eduardo Vargas', policyNumber: 'POL-CAR-44103', company: 'Seguros Caracas', type: 'Patrimoniales', validityStart: '2026-05-15', validityEnd: '2027-05-15', paymentMode: 'Anual (Contado)', premium: 960, commissionRate: 20 },
-      { id: 'p6', clientId: 'c3', clientName: 'Mariana Benítez Silva', policyNumber: 'POL-MER-78201', company: 'Seguros Mercantil', type: 'Auto', validityStart: '2026-03-22', validityEnd: '2027-03-22', paymentMode: 'Mensual (12 cuotas)', premium: 1200, commissionRate: 20 },
-      { id: 'p7', clientId: 'c4', clientName: 'Constructora Horizonte 2020 C.A.', policyNumber: 'POL-OCE-88912', company: 'Seguros Oceánica', type: 'Fianzas', validityStart: '2026-09-28', validityEnd: '2027-09-28', paymentMode: 'Anual (Contado)', premium: 4200, commissionRate: 18 },
+      { id: 'p4', clientId: 'c2', clientName: 'Carlos Eduardo Vargas', policyNumber: 'POL-CAR-44102', company: 'Seguros Caracas', type: 'Salud Individual', validityStart: '2026-03-19', validityEnd: '2027-03-19', paymentMode: 'Semestral (2 cuotas)', premium: 960, commissionRate: 20 },
+      { id: 'p5', clientId: 'c2', clientName: 'Carlos Eduardo Vargas', policyNumber: 'POL-CAR-44103', company: 'Seguros Caracas', type: 'Patrimoniales', validityStart: '2026-05-15', validityEnd: '2027-05-15', paymentMode: 'Anual (Contado)', premium: 960, commissionRate: 20 },
+      { id: 'p6', clientId: 'c3', clientName: 'Mariana Benítez Silva', policyNumber: 'POL-MER-78201', company: 'Seguros Mercantil', type: 'Auto Individual', validityStart: '2026-03-22', validityEnd: '2027-03-22', paymentMode: 'Mensual (12 cuotas)', premium: 1200, commissionRate: 20 },
+      { id: 'p7', clientId: 'c4', clientName: 'Constructora Horizonte 2020 C.A.', policyNumber: 'POL-OCE-88912', company: 'Seguros Oceánica', type: 'Fianza', validityStart: '2026-09-28', validityEnd: '2027-09-28', paymentMode: 'Anual (Contado)', premium: 4200, commissionRate: 18 },
       { id: 'p8', clientId: 'c4', clientName: 'Constructora Horizonte 2020 C.A.', policyNumber: 'POL-PIR-33419', company: 'Seguros Pirámide', type: 'Patrimoniales', validityStart: '2026-06-15', validityEnd: '2027-06-15', paymentMode: 'Semestral (2 cuotas)', premium: 2000, commissionRate: 20 },
-      { id: 'p9', clientId: 'c5', clientName: 'Lic. Gabriela Mendoza', policyNumber: 'POL-MER-99412', company: 'Seguros Mercantil', type: 'Salud', validityStart: '2026-06-25', validityEnd: '2027-06-25', paymentMode: 'Trimestral (4 cuotas)', premium: 2400, commissionRate: 20 },
-      { id: 'p10', clientId: 'c6', clientName: 'Transporte Ávila Express C.A.', policyNumber: 'POL-PIR-55102', company: 'Seguros Pirámide', type: 'Auto', validityStart: '2026-03-15', validityEnd: '2027-03-15', paymentMode: 'Trimestral (4 cuotas)', premium: 5100, commissionRate: 15 },
-      { id: 'p11', clientId: 'c7', clientName: 'Ing. Roberto Alejandro Gómez', policyNumber: 'POL-CAR-77189', company: 'Seguros Caracas', type: 'Auto', validityStart: '2026-03-14', validityEnd: '2027-03-14', paymentMode: 'Semestral (2 cuotas)', premium: 1150, commissionRate: 20 },
+      { id: 'p9', clientId: 'c5', clientName: 'Gabriela Mendoza', policyNumber: 'POL-MER-99412', company: 'Seguros Mercantil', type: 'Salud Individual', validityStart: '2026-06-25', validityEnd: '2027-06-25', paymentMode: 'Trimestral (4 cuotas)', premium: 2400, commissionRate: 20 },
+      { id: 'p10', clientId: 'c6', clientName: 'Transporte Ávila Express C.A.', policyNumber: 'POL-PIR-55102', company: 'Seguros Pirámide', type: 'Auto Flota', validityStart: '2026-03-15', validityEnd: '2027-03-15', paymentMode: 'Trimestral (4 cuotas)', premium: 5100, commissionRate: 15 },
+      { id: 'p11', clientId: 'c7', clientName: 'Roberto Alejandro Gómez', policyNumber: 'POL-CAR-77189', company: 'Seguros Caracas', type: 'Auto Individual', validityStart: '2026-03-14', validityEnd: '2027-03-14', paymentMode: 'Semestral (2 cuotas)', premium: 1150, commissionRate: 20 },
       { id: 'p12', clientId: 'c8', clientName: 'Alimentos El Trébol S.R.L.', policyNumber: 'POL-INT-10293', company: 'Seguros La Internacional', type: 'Patrimoniales', validityStart: '2026-09-04', validityEnd: '2027-09-04', paymentMode: 'Anual (Contado)', premium: 3450, commissionRate: 20 },
-      { id: 'p13', clientId: 'c9', clientName: 'Dra. Valentina Domínguez', policyNumber: 'POL-MER-60192', company: 'Seguros Mercantil', type: 'Salud', validityStart: '2026-06-24', validityEnd: '2027-06-24', paymentMode: 'Trimestral (4 cuotas)', premium: 1380, commissionRate: 20 },
-      { id: 'p14', clientId: 'c11', clientName: 'Farmacias Unidas del Centro C.A.', policyNumber: 'POL-PIR-44120', company: 'Seguros Pirámide', type: 'Salud', validityStart: '2026-06-16', validityEnd: '2027-06-16', paymentMode: 'Trimestral (4 cuotas)', premium: 4200, commissionRate: 20 },
-      { id: 'p15', clientId: 'c10', clientName: 'Fernando José Quintero', policyNumber: 'POL-CAR-55201', company: 'Seguros Caracas', type: 'Salud', validityStart: '2026-04-10', validityEnd: '2027-04-10', paymentMode: 'Semestral (2 cuotas)', premium: 1400, commissionRate: 20 }
+      { id: 'p13', clientId: 'c9', clientName: 'Valentina Domínguez', policyNumber: 'POL-MER-60192', company: 'Seguros Mercantil', type: 'Salud Individual', validityStart: '2026-06-24', validityEnd: '2027-06-24', paymentMode: 'Trimestral (4 cuotas)', premium: 1380, commissionRate: 20 },
+      { id: 'p14', clientId: 'c11', clientName: 'Farmacias Unidas del Centro C.A.', policyNumber: 'POL-PIR-44120', company: 'Seguros Pirámide', type: 'Salud Colectivo', validityStart: '2026-06-16', validityEnd: '2027-06-16', paymentMode: 'Trimestral (4 cuotas)', premium: 4200, commissionRate: 20 },
+      { id: 'p15', clientId: 'c10', clientName: 'Fernando José Quintero', policyNumber: 'POL-CAR-55201', company: 'Seguros Caracas', type: 'Salud Individual', validityStart: '2026-04-10', validityEnd: '2027-04-10', paymentMode: 'Semestral (2 cuotas)', premium: 1400, commissionRate: 20 }
     ];
 
     // Generador de Recibos Relacionados para Administración
@@ -1832,7 +1955,7 @@
       return recs;
     }
 
-    // Generador Dinámico de Recordatorios (Idéntico a ReminderManager.jsx de Manuel)
+    // Generador Dinámico de Recordatorios (Formato exacto solicitado por corretaje)
     function buildRemindersFromPolicies(pols, cls) {
       const simulatedToday = new Date('2026-09-19T00:00:00');
       const upcomingReminders = [];
@@ -1867,7 +1990,7 @@
         while (nextPaymentDate <= endDate && installmentIndex <= numInstallments) {
           if (nextPaymentDate >= simulatedToday) {
             let label = `Cuota ${installmentIndex}/${numInstallments}`;
-            if (numInstallments === 1) label = 'Pago Anual (Contado)';
+            if (numInstallments === 1) label = 'Pago Anual (1/1)';
 
             const dObj = new Date(nextPaymentDate.getTime());
             const dd = String(dObj.getDate()).padStart(2, '0');
@@ -1879,7 +2002,8 @@
               dateObj: dObj,
               dateStr: dateStr,
               amountStr: `$${installmentAmount} (${label})`,
-              rawAmount: `$${installmentAmount}`
+              rawAmount: `$${installmentAmount}`,
+              cuotaTag: label
             });
           }
 
@@ -1903,13 +2027,20 @@
           const matchedClient = (cls || []).find(c => (policy.clientId && c.id === policy.clientId) || c.name === policy.clientName);
           const clientPhone = matchedClient?.phone || policy.phone || '+58 414-000-0000';
 
+          const formattedPolicy = `${policy.type || 'Seguro'} - ${policy.policyNumber || 'S/N'} - ${policy.company || 'Aseguradora'}`;
+
           upcomingReminders.push({
             id: policy.id || policy.policyNumber,
             clientName: policy.clientName,
-            policy: `${policy.type} - ${policy.company}`,
+            policyFormatted: formattedPolicy,
+            policy: formattedPolicy,
+            product: policy.type || 'Seguro',
             policyNumber: policy.policyNumber || 'N/A',
+            company: policy.company || 'Aseguradora',
+            installmentTag: nextPayment.cuotaTag || `Cuota 1/${numInstallments}`,
             frequency: freqLabel,
             amount: pendingPayments[0].rawAmount,
+            dueDateStr: pendingPayments[0].dateStr,
             pendingPayments: pendingPayments,
             daysLeft: diffDays,
             phone: clientPhone
@@ -1920,31 +2051,169 @@
       return upcomingReminders;
     }
 
-    // Gastos Variables Iniciales
+    // Gastos Variables Iniciales con campo Factura para control fiscal
     const initialVarExpenses = [
-      { id: 've1', description: 'Material de oficina y carpetas de expedientes', amount: 95.00, date: '2026-09-06' },
-      { id: 've2', description: 'Combustible y viáticos para entrega de póliza corporativa', amount: 45.00, date: '2026-09-12' },
-      { id: 've3', description: 'Mantenimiento preventivo impresora láser de recibos', amount: 180.00, date: '2026-09-17' }
+      { id: 've1', invoice: 'FAC-00291', description: 'Material de oficina y carpetas de expedientes', amount: 95.00, date: '2026-09-06' },
+      { id: 've2', invoice: 'FAC-00814', description: 'Combustible y viáticos para entrega de póliza corporativa', amount: 45.00, date: '2026-09-12' },
+      { id: 've3', invoice: 'FAC-01103', description: 'Mantenimiento preventivo impresora láser de recibos', amount: 180.00, date: '2026-09-17' }
     ];
 
-    // Reglas de Comisión
+    // Reglas de Comisión y Bonos (Separados Ramo y Tipo de Póliza)
     const initialRules = [
-      { id: 'r1', company: 'Seguros Pirámide', type: 'Salud Colectivo / Individual', commissionRate: 20.0, taxRate: 3.0 },
-      { id: 'r2', company: 'Seguros Pirámide', type: 'R.C.V / Flota Automóvil', commissionRate: 15.0, taxRate: 1.0 },
-      { id: 'r3', company: 'Seguros Caracas', type: 'Salud Individual', commissionRate: 20.0, taxRate: 2.8 },
-      { id: 'r4', company: 'Seguros Caracas', type: 'Cobertura Amplia Casco', commissionRate: 20.0, taxRate: 2.8 },
-      { id: 'r5', company: 'Seguros Mercantil', type: 'Salud Global & Vida', commissionRate: 20.0, taxRate: 3.0 },
-      { id: 'r6', company: 'Seguros Oceánica', type: 'Patrimoniales & Fianzas', commissionRate: 18.0, taxRate: 1.0 },
-      { id: 'r7', company: 'Seguros La Internacional', type: 'Patrimoniales', commissionRate: 20.0, taxRate: 3.0 }
+      { id: 'r1', company: 'Seguros Pirámide', ramo: 'Salud', policyType: 'Colectivo / Individual', commissionRate: 20.0, collectionBonus: 2.5, agreementBonus: 3.0, taxRate: 3.0 },
+      { id: 'r2', company: 'Seguros Pirámide', ramo: 'Automóvil', policyType: 'R.C.V / Flota Automóvil', commissionRate: 15.0, collectionBonus: 2.0, agreementBonus: 2.0, taxRate: 1.0 },
+      { id: 'r3', company: 'Seguros Caracas', ramo: 'Salud', policyType: 'Salud Individual', commissionRate: 20.0, collectionBonus: 3.0, agreementBonus: 2.5, taxRate: 2.8 },
+      { id: 'r4', company: 'Seguros Caracas', ramo: 'Automóvil', policyType: 'Cobertura Amplia Casco', commissionRate: 20.0, collectionBonus: 2.0, agreementBonus: 2.5, taxRate: 2.8 },
+      { id: 'r5', company: 'Seguros Mercantil', ramo: 'Salud', policyType: 'Salud Global & Vida', commissionRate: 20.0, collectionBonus: 2.5, agreementBonus: 3.5, taxRate: 3.0 },
+      { id: 'r6', company: 'Seguros Oceánica', ramo: 'Fianzas', policyType: 'Patrimoniales & Fianzas', commissionRate: 18.0, collectionBonus: 2.0, agreementBonus: 2.0, taxRate: 1.0 },
+      { id: 'r7', company: 'Seguros La Internacional', ramo: 'Patrimoniales', policyType: 'Incendio y Todo Riesgo', commissionRate: 20.0, collectionBonus: 2.5, agreementBonus: 2.5, taxRate: 3.0 }
     ];
 
-    // Estado Reactivo
-    let clients = [...initialClients];
-    let policies = [...initialPolicies];
-    let receipts = buildReceiptsFromPolicies(policies);
-    let reminders = buildRemindersFromPolicies(policies, clients);
-    let varExpenses = [...initialVarExpenses];
-    let commissionRules = [...initialRules];
+    // Catálogo Rotativo de Pólizas para Simulación de IA en Demostración
+    const mockPoliciesCatalog = [
+      {
+        company: 'Seguros Pirámide',
+        clientName: 'Carlos Eduardo Vargas',
+        document: 'V-12.890.312',
+        phone: '+58 412-901-4455',
+        email: 'carlos.vargas@correo.com',
+        policyNumber: 'POL-PIR-88210',
+        type: 'Salud Individual',
+        issueDate: '2026-09-18',
+        validityStart: '2026-09-20',
+        validityEnd: '2027-09-20',
+        paymentMode: 'Trimestral',
+        coverage: '$50,000 HCM Individual',
+        annualPremium: '1450',
+        commissionRate: 20
+      },
+      {
+        company: 'Seguros Mercantil',
+        clientName: 'Mariana Benítez Silva',
+        document: 'V-19.450.881',
+        phone: '+58 424-771-3091',
+        email: 'm.benitez@gmail.com',
+        policyNumber: 'POL-MER-66321',
+        type: 'Auto Individual',
+        issueDate: '2026-09-19',
+        validityStart: '2026-09-21',
+        validityEnd: '2027-09-21',
+        paymentMode: 'Semestral',
+        coverage: 'Cobertura Amplia Casco $22,000',
+        annualPremium: '980',
+        commissionRate: 20
+      },
+      {
+        company: 'Seguros Caracas',
+        clientName: 'Inversiones Monte Alto C.A.',
+        document: 'J-31489201-4',
+        phone: '+58 414-382-9012',
+        email: 'contacto@montealto.com',
+        policyNumber: 'POL-CAR-52194',
+        type: 'Salud Colectivo',
+        issueDate: '2026-09-15',
+        validityStart: '2026-09-21',
+        validityEnd: '2027-09-21',
+        paymentMode: 'Trimestral',
+        coverage: '$100,000 Colectivo 18 Titulares',
+        annualPremium: '4200',
+        commissionRate: 20
+      },
+      {
+        company: 'Seguros Oceánica',
+        clientName: 'Constructora Horizonte 2020 C.A.',
+        document: 'J-40918231-0',
+        phone: '+58 414-229-8810',
+        email: 'administracion@horizonte2020.com',
+        policyNumber: 'POL-OCE-77301',
+        type: 'Fianza',
+        issueDate: '2026-09-14',
+        validityStart: '2026-09-21',
+        validityEnd: '2027-09-21',
+        paymentMode: 'Anual',
+        coverage: 'Fianza Anticipo y Fiel Cumplimiento $150,000',
+        annualPremium: '3600',
+        commissionRate: 18
+      },
+      {
+        company: 'Seguros La Internacional',
+        clientName: 'Alimentos El Trébol S.R.L.',
+        document: 'J-50192834-8',
+        phone: '+58 414-772-0044',
+        email: 'gerencia@eltrebol.com',
+        policyNumber: 'POL-INT-33109',
+        type: 'Patrimoniales',
+        issueDate: '2026-09-16',
+        validityStart: '2026-09-21',
+        validityEnd: '2027-09-21',
+        paymentMode: 'Semestral',
+        coverage: 'Incendio, Terremoto y Robo Contenido $200,000',
+        annualPremium: '2800',
+        commissionRate: 20
+      }
+    ];
+    let aiSimUploadIndex = 0;
+
+    // Estado Reactivo con Persistencia Local
+    let clients = [];
+    let policies = [];
+    let receipts = [];
+    let reminders = [];
+    let varExpenses = [];
+    let commissionRules = [];
+
+    function loadAppData() {
+      try {
+        const sc = localStorage.getItem('demo_crm_clients_v2');
+        clients = sc ? JSON.parse(sc) : JSON.parse(JSON.stringify(initialClients));
+
+        const sp = localStorage.getItem('demo_crm_policies_v2');
+        policies = sp ? JSON.parse(sp) : JSON.parse(JSON.stringify(initialPolicies));
+
+        const se = localStorage.getItem('demo_crm_expenses_v2');
+        varExpenses = se ? JSON.parse(se) : JSON.parse(JSON.stringify(initialVarExpenses));
+
+        const sr = localStorage.getItem('demo_crm_rules_v2');
+        commissionRules = sr ? JSON.parse(sr) : JSON.parse(JSON.stringify(initialRules));
+
+        const srec = localStorage.getItem('demo_crm_receipts_v2');
+        receipts = srec ? JSON.parse(srec) : buildReceiptsFromPolicies(policies);
+      } catch (err) {
+        console.warn('Error cargando persistencia local:', err);
+        clients = JSON.parse(JSON.stringify(initialClients));
+        policies = JSON.parse(JSON.stringify(initialPolicies));
+        receipts = buildReceiptsFromPolicies(policies);
+        varExpenses = JSON.parse(JSON.stringify(initialVarExpenses));
+        commissionRules = JSON.parse(JSON.stringify(initialRules));
+      }
+    }
+
+    function saveAppData() {
+      try {
+        localStorage.setItem('demo_crm_clients_v2', JSON.stringify(clients));
+        localStorage.setItem('demo_crm_policies_v2', JSON.stringify(policies));
+        localStorage.setItem('demo_crm_expenses_v2', JSON.stringify(varExpenses));
+        localStorage.setItem('demo_crm_rules_v2', JSON.stringify(commissionRules));
+        localStorage.setItem('demo_crm_receipts_v2', JSON.stringify(receipts));
+      } catch (err) {
+        console.warn('Error guardando persistencia local:', err);
+      }
+    }
+
+    function resetDemoData() {
+      if (!confirm('¿Deseas restablecer todos los clientes, pólizas y finanzas a su estado inicial de demostración?')) return;
+      localStorage.removeItem('demo_crm_clients_v2');
+      localStorage.removeItem('demo_crm_policies_v2');
+      localStorage.removeItem('demo_crm_expenses_v2');
+      localStorage.removeItem('demo_crm_rules_v2');
+      localStorage.removeItem('demo_crm_receipts_v2');
+      loadAppData();
+      refreshApp();
+      alert('¡Datos de demostración restablecidos con éxito!');
+    }
+
+    // Inicializar estado reactivo
+    loadAppData();
 
     let selectedAdminMonth = '2026-09';
     let currentReminderFilter = 'all';
@@ -2126,34 +2395,32 @@
       if (reminders.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="6" class="py-8 text-center text-gray-400 text-xs">
+            <td colspan="7" class="py-8 text-center text-gray-400 text-xs">
               <div class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 mb-1">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
               </div>
               <p class="font-medium text-gray-600">No hay pagos pendientes por vencer</p>
-              <p class="text-[11px] text-gray-400 mt-0.5">Al cargar una póliza en "Pólizas", sus cuotas se sincronizarán aquí automáticamente.</p>
+              <p class="text-[11px] text-gray-400 mt-0.5">Al registrar una póliza, sus cuotas se sincronizarán aquí automáticamente.</p>
             </td>
           </tr>
         `;
       } else {
         reminders.slice(0, 3).forEach(rem => {
           const tr = document.createElement('tr');
-          tr.className = 'hover:bg-gray-50/50 transition-colors';
+          tr.className = 'hover:bg-gray-50/50 transition-colors border-b border-gray-50 last:border-0';
           tr.innerHTML = `
-            <td class="py-4 text-brand-navy font-medium">${rem.clientName}</td>
-            <td class="py-4 text-gray-500">
-              ${rem.policy}
-              <div class="text-xs text-gray-400">${rem.pendingPayments[0]?.amountStr || rem.amount}</div>
-            </td>
-            <td class="py-4 font-semibold text-gray-700">${rem.amount}</td>
-            <td class="py-4 text-gray-500">${rem.pendingPayments[0]?.dateStr || '19/09/2026'}</td>
-            <td class="py-4">
-              <span class="px-2.5 py-1 rounded-full text-xs font-medium ${rem.daysLeft < 0 ? 'bg-red-100 text-red-700' : rem.daysLeft === 0 ? 'bg-orange-100 text-orange-700' : 'bg-yellow-100 text-yellow-700'}">
-                ${rem.daysLeft < 0 ? `Vencido hace ${Math.abs(rem.daysLeft)} días` : rem.daysLeft === 0 ? '¡Hoy!' : `En ${rem.daysLeft} días`}
+            <td class="py-4 pr-4 font-bold text-brand-navy">${rem.clientName}</td>
+            <td class="py-4 pr-4 font-medium text-gray-700">${rem.policyFormatted}</td>
+            <td class="py-4 pr-4 font-semibold text-brand-teal">${rem.installmentTag}</td>
+            <td class="py-4 pr-4 font-bold text-gray-800">${rem.amount}</td>
+            <td class="py-4 pr-4 text-gray-500">${rem.dueDateStr}</td>
+            <td class="py-4 pr-4">
+              <span class="px-2.5 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${rem.daysLeft < 0 ? 'bg-red-100 text-red-700' : rem.daysLeft === 0 ? 'bg-orange-100 text-orange-700' : 'bg-yellow-100 text-yellow-700'}">
+                ${rem.daysLeft < 0 ? `Vencido hace ${Math.abs(rem.daysLeft)} días` : rem.daysLeft === 0 ? 'Vence Hoy' : `En ${rem.daysLeft} días`}
               </span>
             </td>
             <td class="py-4 text-right">
-              <button onclick="openWhatsAppModal('${rem.clientName}', '${rem.policy}', '${rem.amount}')" class="inline-flex items-center space-x-1 bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors">
+              <button onclick="openWhatsAppModal('${rem.clientName}', '${rem.policyFormatted}', '${rem.amount}')" class="inline-flex items-center space-x-1 bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap">
                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
                 <span>Notificar</span>
               </button>
@@ -2330,6 +2597,7 @@
       const docInput = document.getElementById('editClientDoc');
       const phoneInput = document.getElementById('editClientPhone');
       const emailInput = document.getElementById('editClientEmail');
+      const addressInput = document.getElementById('editClientAddress');
       const statusInput = document.getElementById('editClientPaymentStatus');
 
       if (id) {
@@ -2341,6 +2609,7 @@
         docInput.value = c.doc;
         phoneInput.value = c.phone || '';
         emailInput.value = c.email || '';
+        if (addressInput) addressInput.value = c.address || '';
         statusInput.value = c.paymentStatus || 'Al día';
       } else {
         title.textContent = 'Registrar Asegurado';
@@ -2349,6 +2618,7 @@
         docInput.value = '';
         phoneInput.value = '';
         emailInput.value = '';
+        if (addressInput) addressInput.value = '';
         statusInput.value = 'Al día';
       }
       modal.classList.remove('hidden');
@@ -2364,6 +2634,7 @@
       const doc = document.getElementById('editClientDoc').value.trim();
       const phone = document.getElementById('editClientPhone').value.trim();
       const email = document.getElementById('editClientEmail').value.trim();
+      const address = (document.getElementById('editClientAddress')?.value || '').trim();
       const paymentStatus = document.getElementById('editClientPaymentStatus').value;
 
       if (!name || !doc) return;
@@ -2371,13 +2642,34 @@
       if (id) {
         const idx = clients.findIndex(x => x.id === id);
         if (idx !== -1) {
-          clients[idx] = { ...clients[idx], name, doc, phone, email, paymentStatus };
+          const oldName = clients[idx].name;
+          clients[idx] = { ...clients[idx], name, doc, phone, email, address, paymentStatus };
+          
+          // Actualización en cascada en pólizas y recibos (idéntico a Manuel Morillo)
+          if (oldName !== name) {
+            policies.forEach(p => {
+              if (p.clientId === id || p.clientName === oldName) {
+                p.clientName = name;
+              }
+            });
+            receipts.forEach(r => {
+              if (r.clientId === id || r.clientName === oldName) {
+                r.clientName = name;
+              }
+            });
+            reminders.forEach(rem => {
+              if (rem.clientName === oldName) {
+                rem.clientName = name;
+              }
+            });
+          }
         }
       } else {
         const newClient = {
           id: 'c_' + Date.now(),
           name,
           doc,
+          address: address || 'Caracas, Venezuela',
           phone: phone || '+58 414-000-0000',
           email: email || 'cliente@correo.com',
           paymentStatus
@@ -2385,6 +2677,7 @@
         clients.unshift(newClient);
       }
 
+      saveAppData();
       closeClientModal();
       refreshApp();
       alert('¡Asegurado guardado exitosamente!');
@@ -2393,6 +2686,7 @@
     function deleteClient(id) {
       if (!confirm('¿Deseas eliminar este cliente y desvincular sus pólizas?')) return;
       clients = clients.filter(c => c.id !== id);
+      saveAppData();
       refreshApp();
     }
 
@@ -2404,6 +2698,37 @@
       document.getElementById('modalClientDoc').textContent = c.doc;
       document.getElementById('modalClientPhone').textContent = c.phone;
       document.getElementById('modalClientEmail').textContent = c.email;
+      const addrEl = document.getElementById('modalClientAddress');
+      if (addrEl) addrEl.textContent = c.address || 'Caracas, Venezuela';
+
+      // Render de recaudos KYC / SUDEASEG (Prevención LC/FT)
+      const kycContainer = document.getElementById('modalClientKycDocs');
+      if (kycContainer) {
+        const isCompany = c.doc.startsWith('J') || c.name.includes('C.A.') || c.name.includes('S.R.L.');
+        kycContainer.innerHTML = `
+          <div class="bg-white p-3 rounded-xl border border-gray-200 flex items-center justify-between shadow-xs">
+            <div>
+              <span class="font-bold text-gray-800 block text-[11px]">📄 Cédula / RIF</span>
+              <span class="text-[10px] text-gray-400 font-mono">${c.doc}</span>
+            </div>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">Verificado</span>
+          </div>
+          <div class="bg-white p-3 rounded-xl border border-gray-200 flex items-center justify-between shadow-xs">
+            <div>
+              <span class="font-bold text-gray-800 block text-[11px]">${isCompany ? '🏢 Acta Constitutiva' : '🏠 Recibo Domicilio'}</span>
+              <span class="text-[10px] text-gray-400 font-mono">${isCompany ? 'Reg. Mercantil' : 'Comprobante'}</span>
+            </div>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">Cotejado</span>
+          </div>
+          <div class="bg-white p-3 rounded-xl border border-gray-200 flex items-center justify-between shadow-xs">
+            <div>
+              <span class="font-bold text-gray-800 block text-[11px]">🛡️ Ficha KYC / LC/FT</span>
+              <span class="text-[10px] text-gray-400">Origen de Fondos</span>
+            </div>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700">Conforme</span>
+          </div>
+        `;
+      }
 
       const clientPols = policies.filter(p => p.clientId === c.id || p.clientName === c.name);
       document.getElementById('modalClientPoliciesCount').textContent = clientPols.length;
@@ -2441,6 +2766,12 @@
       };
 
       document.getElementById('clientDetailModal').classList.remove('hidden');
+    }
+
+    function simUploadKycDoc() {
+      const docTypes = ['Cédula de Identidad Digitalizada', 'RIF Actualizado 2026', 'Acta de Asamblea Extraordinaria', 'Declaración Jurada de Origen de Fondos'];
+      const pick = docTypes[Math.floor(Math.random() * docTypes.length)];
+      alert(`¡Documento digital cargado con éxito!\n\nRecaudo: ${pick}\nEstatus: Verificado y archivado en expediente digital según Providencia SUDEASEG.`);
     }
 
     function closeClientDetail() {
@@ -2522,6 +2853,7 @@
       if (!confirm('¿Deseas eliminar esta póliza y sus recibos generados?')) return;
       policies = policies.filter(p => p.id !== id);
       receipts = receipts.filter(r => r.policyId !== id);
+      saveAppData();
       refreshApp();
     }
 
@@ -2768,19 +3100,27 @@ Devuelve EXACTAMENTE Y SOLAMENTE una estructura JSON válida con estas claves, s
         ext.classList.add('hidden');
         succ.classList.remove('hidden');
 
-        document.getElementById('polExtClient').value = 'Corporación Alimentaria Los Andes C.A.';
-        document.getElementById('polExtDoc').value = 'J-48291044-1';
-        document.getElementById('polExtCompany').value = 'Seguros Mercantil';
-        document.getElementById('polExtPhone').value = '+58 414-889-1022';
-        document.getElementById('polExtEmail').value = 'administracion@losandes.com';
-        document.getElementById('polExtPolicyNum').value = 'POL-MER-94821';
-        document.getElementById('polExtType').value = 'Salud Colectivo';
-        document.getElementById('polExtIssueDate').value = '2026-09-19';
-        document.getElementById('polExtValidityStart').value = '2026-09-21';
-        document.getElementById('polExtValidityEnd').value = '2027-09-21';
-        document.getElementById('polExtPaymentMode').value = 'Trimestral';
-        document.getElementById('polExtCoverage').value = '$100,000 por patología';
-        document.getElementById('polExtAnnualPremium').value = '3850';
+        // Selección dinámica o por coincidencia de nombre de archivo del catálogo rotativo
+        const fName = (file && file.name) ? file.name.toLowerCase() : '';
+        let mock = mockPoliciesCatalog.find(m => fName.includes(m.company.toLowerCase().split(' ')[1] || '---'));
+        if (!mock) {
+          mock = mockPoliciesCatalog[aiSimUploadIndex % mockPoliciesCatalog.length];
+          aiSimUploadIndex++;
+        }
+
+        document.getElementById('polExtClient').value = mock.clientName;
+        document.getElementById('polExtDoc').value = mock.document;
+        document.getElementById('polExtCompany').value = mock.company;
+        document.getElementById('polExtPhone').value = mock.phone;
+        document.getElementById('polExtEmail').value = mock.email;
+        document.getElementById('polExtPolicyNum').value = mock.policyNumber;
+        document.getElementById('polExtType').value = mock.type;
+        document.getElementById('polExtIssueDate').value = mock.issueDate;
+        document.getElementById('polExtValidityStart').value = mock.validityStart;
+        document.getElementById('polExtValidityEnd').value = mock.validityEnd;
+        document.getElementById('polExtPaymentMode').value = mock.paymentMode;
+        document.getElementById('polExtCoverage').value = mock.coverage;
+        document.getElementById('polExtAnnualPremium').value = mock.annualPremium;
 
         updateDatePreview('polExtIssueDate', 'previewIssueDate');
         updateDatePreview('polExtValidityStart', 'previewValStart');
@@ -2851,15 +3191,17 @@ Devuelve EXACTAMENTE Y SOLAMENTE una estructura JSON válida con estas claves, s
       }
 
       // 1. Guardar o vincular cliente
-      let client = clients.find(c => c.name.toLowerCase() === clientName.toLowerCase());
+      let client = clients.find(c => c.name.toLowerCase() === clientName.toLowerCase() || (doc && c.doc === doc));
       if (!client) {
         client = {
           id: 'c_' + Date.now(),
           name: clientName,
           doc: doc || 'V-00000000',
+          address: 'Av. Principal de Las Mercedes, Caracas, Venezuela',
           phone: phone || '+58 414-000-0000',
           email: email || 'cliente@correo.com',
-          paymentStatus: 'Al día'
+          paymentStatus: 'Al día',
+          kycDocs: []
         };
         clients.unshift(client);
       }
@@ -2885,21 +3227,27 @@ Devuelve EXACTAMENTE Y SOLAMENTE una estructura JSON válida con estas claves, s
       const newReceipts = buildReceiptsFromPolicies([newPolicy]);
       receipts.unshift(...newReceipts);
 
-      // 4. Agregar a Recordatorios con todas sus cuotas fraccionadas
+      // 4. Agregar a Recordatorios con formato Producto – Nº Póliza – Compañía
       const remCalc = buildReminderPendingPayments(newPolicy.validityStart, newPolicy.paymentMode, newPolicy.premium);
+      const numInst = remCalc.numInst;
+      const instTag = numInst === 1 ? 'Pago Anual (1/1)' : `Cuota 1/${numInst}`;
 
       reminders.unshift({
         id: 'r_' + Date.now(),
         clientName: newPolicy.clientName,
         policy: `${newPolicy.type} - ${newPolicy.company}`,
+        policyFormatted: `${newPolicy.type} – Nº ${newPolicy.policyNumber} – ${newPolicy.company}`,
         policyNumber: newPolicy.policyNumber,
         frequency: paymentMode,
+        installmentTag: instTag,
+        dueDateStr: '21/09/2026',
         amount: remCalc.instAmountFormatted,
         daysLeft: 2,
         phone: client.phone,
         pendingPayments: remCalc.payments
       });
 
+      saveAppData();
       toggleUploadPolicyCard();
       refreshApp();
       alert(`¡Póliza ${policyNumber} registrada con éxito! Aparece reflejada en Clientes, Pólizas, Recordatorios y Administración.`);
@@ -2907,16 +3255,32 @@ Devuelve EXACTAMENTE Y SOLAMENTE una estructura JSON válida con estas claves, s
 
     // ================= REGISTRO MANUAL DE POLIZA =================
     function openManualPolicyModal() {
-      const select = document.getElementById('manualPolicyClientId');
-      select.innerHTML = '';
-      clients.forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c.id;
-        opt.textContent = `${c.name} (${c.doc})`;
-        select.appendChild(opt);
-      });
+      const datalist = document.getElementById('clientsDatalist');
+      if (datalist) {
+        datalist.innerHTML = '';
+        clients.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c.name;
+          opt.textContent = `${c.doc} - ${c.name}`;
+          datalist.appendChild(opt);
+        });
+      }
+      const nameInp = document.getElementById('manualPolicyClientName');
+      if (nameInp) nameInp.value = '';
+      const docInp = document.getElementById('manualPolicyClientDoc');
+      if (docInp) docInp.value = '';
+
       document.getElementById('manualPolicyNumber').value = 'POL-' + Math.floor(10000 + Math.random() * 90000);
       document.getElementById('manualPolicyModal').classList.remove('hidden');
+    }
+
+    function onManualClientNameInput(val) {
+      const trimmed = (val || '').trim().toLowerCase();
+      const matched = clients.find(c => c.name.toLowerCase() === trimmed);
+      const docInp = document.getElementById('manualPolicyClientDoc');
+      if (matched && docInp) {
+        docInp.value = matched.doc;
+      }
     }
 
     function closeManualPolicyModal() {
@@ -2924,8 +3288,8 @@ Devuelve EXACTAMENTE Y SOLAMENTE una estructura JSON válida con estas claves, s
     }
 
     function saveManualPolicyForm() {
-      const clientId = document.getElementById('manualPolicyClientId').value;
-      const client = clients.find(c => c.id === clientId);
+      const clientName = (document.getElementById('manualPolicyClientName')?.value || '').trim();
+      const clientDoc = (document.getElementById('manualPolicyClientDoc')?.value || '').trim();
       const company = document.getElementById('manualPolicyCompany').value;
       const type = document.getElementById('manualPolicyType').value;
       const policyNumber = document.getElementById('manualPolicyNumber').value.trim();
@@ -2933,10 +3297,33 @@ Devuelve EXACTAMENTE Y SOLAMENTE una estructura JSON válida con estas claves, s
       const paymentMode = document.getElementById('manualPolicyPaymentMode').value;
       const validityEnd = document.getElementById('manualPolicyExpiry').value;
 
+      if (!clientName || !policyNumber) {
+        alert('Por favor completa el nombre del asegurado y el número de póliza.');
+        return;
+      }
+
+      // 1. Guardar o vincular cliente
+      let client = clients.find(c => c.name.toLowerCase() === clientName.toLowerCase() || (clientDoc && c.doc === clientDoc));
+      if (!client) {
+        client = {
+          id: 'c_' + Date.now(),
+          name: clientName,
+          doc: clientDoc || 'V-00000000',
+          address: 'Caracas, Distrito Capital, Venezuela',
+          phone: '+58 414-000-0000',
+          email: `${clientName.toLowerCase().replace(/[^a-z0-9]/g, '')}@correo.com`,
+          paymentStatus: 'Al día',
+          kycDocs: []
+        };
+        clients.unshift(client);
+      } else if (clientDoc && !client.doc) {
+        client.doc = clientDoc;
+      }
+
       const newPol = {
         id: 'pol_' + Date.now(),
-        clientId: client ? client.id : 'c1',
-        clientName: client ? client.name : 'Asegurado Nuevo',
+        clientId: client.id,
+        clientName: client.name,
         policyNumber,
         company,
         type,
@@ -2944,6 +3331,7 @@ Devuelve EXACTAMENTE Y SOLAMENTE una estructura JSON válida con estas claves, s
         validityEnd: validityEnd || '2027-09-21',
         paymentMode,
         premium,
+        coverage: 'Cobertura Oficial',
         commissionRate: 20
       };
 
@@ -2954,21 +3342,27 @@ Devuelve EXACTAMENTE Y SOLAMENTE una estructura JSON válida con estas claves, s
       const newReceipts = buildReceiptsFromPolicies([newPol]);
       receipts.unshift(...newReceipts);
 
-      // 3. Crear recordatorio de pago en Recordatorios con todas sus cuotas fraccionadas
+      // 3. Crear recordatorio de pago en Recordatorios con formato Producto – Nº Póliza – Compañía
       const remCalc = buildReminderPendingPayments(newPol.validityStart, newPol.paymentMode, newPol.premium);
+      const numInst = remCalc.numInst;
+      const instTag = numInst === 1 ? 'Pago Anual (1/1)' : `Cuota 1/${numInst}`;
 
       reminders.unshift({
         id: 'r_' + Date.now(),
         clientName: newPol.clientName,
         policy: `${newPol.type} - ${newPol.company}`,
+        policyFormatted: `${newPol.type} – Nº ${newPol.policyNumber} – ${newPol.company}`,
         policyNumber: newPol.policyNumber,
         frequency: paymentMode,
+        installmentTag: instTag,
+        dueDateStr: '21/09/2026',
         amount: remCalc.instAmountFormatted,
         daysLeft: 2,
-        phone: client ? client.phone : '+58 414-000-0000',
+        phone: client.phone,
         pendingPayments: remCalc.payments
       });
 
+      saveAppData();
       closeManualPolicyModal();
       refreshApp();
       alert(`¡Póliza ${policyNumber} registrada! Se ha vinculado automáticamente a Clientes, Pólizas, Recordatorios y Administración.`);
@@ -3423,7 +3817,10 @@ Devuelve EXACTAMENTE Y SOLAMENTE una estructura JSON válida con estas claves, s
           div.innerHTML = `
             <div>
               <p class="font-semibold text-brand-navy">${exp.description}</p>
-              <p class="text-[11px] text-gray-400">${latamDate}</p>
+              <div class="flex items-center gap-2 mt-0.5">
+                <span class="text-[10px] font-mono font-bold text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">Fact: ${exp.invoice || 'S/N'}</span>
+                <span class="text-[11px] text-gray-400">${latamDate}</span>
+              </div>
             </div>
             <div class="flex items-center space-x-3">
               <span class="font-black text-red-600">-$${exp.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
@@ -3472,6 +3869,7 @@ Devuelve EXACTAMENTE Y SOLAMENTE una estructura JSON válida con estas claves, s
       pendingReceiptToConfirm.status = 'Pagado';
       pendingReceiptToConfirm.paymentDate = isoDate;
 
+      saveAppData();
       closeConfirmPaymentModal();
       renderAdministration();
       alert(`¡Cobro de ${clientName} acreditado con éxito! Se ha sumado al Ingreso Real y a la Relación de Comisiones.`);
@@ -3484,6 +3882,7 @@ Devuelve EXACTAMENTE Y SOLAMENTE una estructura JSON válida con estas claves, s
 
       rec.status = 'Pendiente';
       rec.paymentDate = null;
+      saveAppData();
       renderAdministration();
     }
 
@@ -3495,6 +3894,7 @@ Devuelve EXACTAMENTE Y SOLAMENTE una estructura JSON válida con estas claves, s
 
     function saveNewExpense() {
       const desc = document.getElementById('newExpenseDesc').value.trim();
+      const invoice = (document.getElementById('newExpenseInvoice')?.value || '').trim();
       const amount = parseFloat(document.getElementById('newExpenseAmount').value);
       const date = document.getElementById('newExpenseDate').value;
 
@@ -3506,19 +3906,23 @@ Devuelve EXACTAMENTE Y SOLAMENTE una estructura JSON válida con estas claves, s
       varExpenses.unshift({
         id: 've_' + Date.now(),
         description: desc,
+        invoice: invoice || 'S/N',
         amount: amount,
         date: date
       });
 
       document.getElementById('newExpenseDesc').value = '';
+      if (document.getElementById('newExpenseInvoice')) document.getElementById('newExpenseInvoice').value = '';
       document.getElementById('newExpenseAmount').value = '';
       toggleVariableForm();
+      saveAppData();
       renderAdministration();
     }
 
     function deleteVarExpense(id) {
       if (!confirm('¿Seguro que deseas eliminar este gasto?')) return;
       varExpenses = varExpenses.filter(e => e.id !== id);
+      saveAppData();
       renderAdministration();
     }
 
@@ -3536,12 +3940,15 @@ Devuelve EXACTAMENTE Y SOLAMENTE una estructura JSON válida con estas claves, s
         tr.className = 'border-b border-gray-50 last:border-0 hover:bg-gray-50/50';
         tr.innerHTML = `
           <td class="py-3 pr-4 font-bold text-brand-navy">${r.company}</td>
-          <td class="py-3 pr-4 text-gray-700">${r.type}</td>
+          <td class="py-3 pr-4 text-gray-700 font-semibold">${r.ramo || r.type || 'General'}</td>
+          <td class="py-3 pr-4 text-gray-600">${r.policyType || r.type || 'Póliza'}</td>
           <td class="py-3 pr-4 text-right font-black text-brand-teal">${r.commissionRate.toFixed(1)}%</td>
-          <td class="py-3 pr-4 text-right font-bold text-gray-600">${r.taxRate.toFixed(1)}%</td>
+          <td class="py-3 pr-4 text-right font-bold text-brand-navy">${(r.collectionBonus || 0).toFixed(1)}%</td>
+          <td class="py-3 pr-4 text-right font-bold text-indigo-600">${(r.agreementBonus || 0).toFixed(1)}%</td>
+          <td class="py-3 pr-4 text-right font-medium text-gray-500">${r.taxRate.toFixed(1)}%</td>
           <td class="py-3 text-right">
             <button onclick="deleteCommissionRule('${r.id}')" class="text-gray-400 hover:text-red-500 font-bold p-1">
-              <svg class="w-4 h-4 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+              <svg class="w-4 h-4 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x1="11" y1="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
             </button>
           </td>
         `;
@@ -3556,36 +3963,48 @@ Devuelve EXACTAMENTE Y SOLAMENTE una estructura JSON válida con estas claves, s
 
     function saveCommissionRule() {
       const company = document.getElementById('ruleCompanyInput').value.trim();
-      const type = document.getElementById('ruleTypeInput').value.trim();
+      const ramo = document.getElementById('ruleRamoInput').value.trim();
+      const policyType = document.getElementById('rulePolicyTypeInput').value.trim();
       const commissionRate = parseFloat(document.getElementById('ruleCommissionInput').value) || 20.0;
+      const collectionBonus = parseFloat(document.getElementById('ruleBonusCobranzaInput').value) || 0.0;
+      const agreementBonus = parseFloat(document.getElementById('ruleBonusConvenioInput').value) || 0.0;
       const taxRate = parseFloat(document.getElementById('ruleTaxInput').value) || 2.0;
 
-      if (!company || !type) {
-        alert('Por favor ingresa la aseguradora y el ramo.');
+      if (!company || !ramo || !policyType) {
+        alert('Por favor ingresa la aseguradora, el ramo y el tipo de póliza.');
         return;
       }
 
       commissionRules.unshift({
         id: 'cr_' + Date.now(),
         company,
-        type,
+        ramo,
+        policyType,
+        type: policyType,
         commissionRate,
+        collectionBonus,
+        agreementBonus,
         taxRate
       });
 
       document.getElementById('ruleCompanyInput').value = '';
-      document.getElementById('ruleTypeInput').value = '';
+      document.getElementById('ruleRamoInput').value = '';
+      document.getElementById('rulePolicyTypeInput').value = '';
       document.getElementById('ruleCommissionInput').value = '';
-      document.getElementById('ruleTaxInput').value = '';
+      document.getElementById('ruleBonusCobranzaInput').value = '';
+      document.getElementById('ruleBonusConvenioInput').value = '';
+      document.getElementById('ruleTaxInput').value = '3.0';
       toggleAddRuleForm();
 
+      saveAppData();
       renderCommissionRulesTable();
-      alert(`¡Nueva regla de comisión para ${company} (${type}) guardada con éxito!`);
+      alert(`¡Nueva regla de comisión para ${company} (${ramo} - ${policyType}) guardada con éxito!`);
     }
 
     function deleteCommissionRule(id) {
       if (!confirm('¿Deseas eliminar esta regla de comisión?')) return;
       commissionRules = commissionRules.filter(r => r.id !== id);
+      saveAppData();
       renderCommissionRulesTable();
     }
 
@@ -3612,41 +4031,182 @@ Devuelve EXACTAMENTE Y SOLAMENTE una estructura JSON válida con estas claves, s
       }
     }
 
-    // ================= BREAKDOWN MODAL DASHBOARD =================
+    // ================= BREAKDOWN MODAL DASHBOARD (4 VISTAS INDEPENDIENTES) =================
     function openBreakdownModal(type) {
       const modal = document.getElementById('breakdownModal');
       const title = document.getElementById('breakdownModalTitle');
-      const titles = {
-        clientes: 'Desglose: Clientes por Compañía y Ramo',
-        polizas: 'Desglose: Pólizas Activas en Gestión',
-        cartera: 'Desglose: Volumen Total de Cartera y Primas',
-        comisiones: 'Desglose: Proyección de Comisiones Netas'
-      };
-      title.textContent = titles[type] || 'Desglose Detallado';
-
+      const subtitle = document.getElementById('breakdownModalSubtitle');
+      const counter = document.getElementById('breakdownModalCounter');
+      const thead = document.getElementById('breakdownTableThead');
       const tbody = document.getElementById('breakdownTableTbody');
+      const tfoot = document.getElementById('breakdownTableTfoot');
+
       tbody.innerHTML = '';
+      tfoot.innerHTML = '';
 
-      const map = {};
-      policies.forEach(p => {
-        const k = `${p.company}|${p.type}`;
-        if (!map[k]) map[k] = { company: p.company, type: p.type, count: 0, premium: 0, comm: 0 };
-        map[k].count++;
-        map[k].premium += p.premium;
-        map[k].comm += (p.premium * (p.commissionRate || 15)) / 100;
-      });
+      if (type === 'clientes') {
+        title.textContent = 'Directorio Detallado de Asegurados';
+        subtitle.textContent = 'Listado integral de clientes registrados con dirección de domicilio y datos de contacto';
+        counter.textContent = `${clients.length} asegurados registrados`;
 
-      Object.values(map).forEach(row => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="py-3 font-bold text-brand-navy">${row.company}</td>
-          <td class="py-3 text-gray-600">${row.type}</td>
-          <td class="py-3 text-center font-bold">${row.count}</td>
-          <td class="py-3 text-right font-bold text-gray-800">$${row.premium.toLocaleString()}</td>
-          <td class="py-3 text-right font-bold text-brand-teal">$${Math.round(row.comm).toLocaleString()}</td>
+        thead.innerHTML = `
+          <tr class="border-b border-gray-200 text-gray-400 font-extrabold uppercase text-[10px]">
+            <th class="py-3 pr-4">Nombre / Razón Social</th>
+            <th class="py-3 pr-4">Cédula / RIF</th>
+            <th class="py-3 pr-4">Dirección Fiscal / Domicilio</th>
+            <th class="py-3 pr-4">Teléfono</th>
+            <th class="py-3 pr-4">Correo</th>
+            <th class="py-3 text-right">Estatus</th>
+          </tr>
         `;
-        tbody.appendChild(tr);
-      });
+
+        clients.forEach(c => {
+          const tr = document.createElement('tr');
+          tr.className = 'border-b border-gray-50 last:border-0 hover:bg-gray-50/50';
+          tr.innerHTML = `
+            <td class="py-3 pr-4 font-bold text-brand-navy">${c.name}</td>
+            <td class="py-3 pr-4 font-mono text-gray-500">${c.doc}</td>
+            <td class="py-3 pr-4 text-gray-600 max-w-[240px] truncate" title="${c.address || 'No registrada'}">${c.address || 'Caracas, Venezuela'}</td>
+            <td class="py-3 pr-4 text-gray-600 whitespace-nowrap">${c.phone || '-'}</td>
+            <td class="py-3 pr-4 text-gray-500 max-w-[180px] truncate">${c.email || '-'}</td>
+            <td class="py-3 text-right">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${c.paymentStatus === 'Moroso' ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700'}">
+                ${c.paymentStatus || 'Al día'}
+              </span>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+      } else if (type === 'polizas') {
+        title.textContent = 'Pólizas Activas en Gestión';
+        subtitle.textContent = 'Relación de contratos vigentes organizados por aseguradora y producto (sin información financiera sensible)';
+        counter.textContent = `${policies.length} pólizas vigentes`;
+
+        thead.innerHTML = `
+          <tr class="border-b border-gray-200 text-gray-400 font-extrabold uppercase text-[10px]">
+            <th class="py-3 pr-4">Aseguradora</th>
+            <th class="py-3 pr-4">Producto de Seguro</th>
+            <th class="py-3 pr-4">Nº de Póliza</th>
+            <th class="py-3 pr-4">Asegurado</th>
+            <th class="py-3 pr-4">Vigencia Hasta</th>
+            <th class="py-3 text-right">Estatus</th>
+          </tr>
+        `;
+
+        // Agrupadas o detalladas por aseguradora y producto
+        const sorted = [...policies].sort((a, b) => a.company.localeCompare(b.company) || a.type.localeCompare(b.type));
+        sorted.forEach(p => {
+          const tr = document.createElement('tr');
+          tr.className = 'border-b border-gray-50 last:border-0 hover:bg-gray-50/50';
+          tr.innerHTML = `
+            <td class="py-3 pr-4 font-bold text-brand-navy">${p.company}</td>
+            <td class="py-3 pr-4 font-semibold text-brand-teal">${p.type}</td>
+            <td class="py-3 pr-4 font-mono text-gray-600">${p.policyNumber}</td>
+            <td class="py-3 pr-4 text-gray-700">${p.clientName}</td>
+            <td class="py-3 pr-4 text-gray-500 whitespace-nowrap">${p.validityEnd || '2027-09-20'}</td>
+            <td class="py-3 text-right">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">
+                Activa
+              </span>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+      } else if (type === 'cartera') {
+        title.textContent = 'Volumen Total de Cartera y Primas';
+        subtitle.textContent = 'Consolidado de contratos asegurados, formas de fraccionamiento y volumen de prima administrada';
+
+        let totalCartera = 0;
+        policies.forEach(p => totalCartera += (p.premium || 0));
+        counter.textContent = `${policies.length} pólizas | Total Cartera: $${totalCartera.toLocaleString('en-US')}`;
+
+        thead.innerHTML = `
+          <tr class="border-b border-gray-200 text-gray-400 font-extrabold uppercase text-[10px]">
+            <th class="py-3 pr-4">Nº Póliza</th>
+            <th class="py-3 pr-4">Asegurado</th>
+            <th class="py-3 pr-4">Compañía</th>
+            <th class="py-3 pr-4">Producto</th>
+            <th class="py-3 pr-4">Forma de Pago</th>
+            <th class="py-3 text-right">Prima Anual ($)</th>
+          </tr>
+        `;
+
+        policies.forEach(p => {
+          const tr = document.createElement('tr');
+          tr.className = 'border-b border-gray-50 last:border-0 hover:bg-gray-50/50';
+          tr.innerHTML = `
+            <td class="py-3 pr-4 font-mono font-bold text-brand-navy">${p.policyNumber}</td>
+            <td class="py-3 pr-4 text-gray-800 font-medium">${p.clientName}</td>
+            <td class="py-3 pr-4 text-gray-600">${p.company}</td>
+            <td class="py-3 pr-4 text-gray-500 text-xs">${p.type}</td>
+            <td class="py-3 pr-4">
+              <span class="px-2 py-0.5 bg-gray-100 rounded text-[10px] font-semibold text-gray-700">${p.paymentMode || 'Anual'}</span>
+            </td>
+            <td class="py-3 text-right font-black text-brand-navy whitespace-nowrap">$${(p.premium || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        tfoot.innerHTML = `
+          <tr class="border-t-2 border-gray-200 bg-gray-50/80 font-bold">
+            <td colspan="5" class="py-3 pr-4 text-right text-gray-600 uppercase tracking-wider text-[11px]">Prima Anual Total Cartera:</td>
+            <td class="py-3 text-right font-black text-brand-navy text-sm">$${totalCartera.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          </tr>
+        `;
+
+      } else if (type === 'comisiones') {
+        title.textContent = 'Proyección de Comisiones Netas';
+        subtitle.textContent = 'Estimación de ingresos por comisiones de intermediación según tabulador y tasa pactada con cada aseguradora';
+
+        let totalCartera = 0;
+        let totalComision = 0;
+        policies.forEach(p => {
+          const prem = p.premium || 0;
+          const commRate = p.commissionRate || 20;
+          totalCartera += prem;
+          totalComision += (prem * commRate) / 100;
+        });
+        counter.textContent = `${policies.length} pólizas | Comisión Total Estimada: $${Math.round(totalComision).toLocaleString('en-US')}`;
+
+        thead.innerHTML = `
+          <tr class="border-b border-gray-200 text-gray-400 font-extrabold uppercase text-[10px]">
+            <th class="py-3 pr-4">Nº Póliza</th>
+            <th class="py-3 pr-4">Asegurado</th>
+            <th class="py-3 pr-4">Compañía</th>
+            <th class="py-3 pr-4 text-right">Prima Anual ($)</th>
+            <th class="py-3 pr-4 text-right">% Comisión</th>
+            <th class="py-3 text-right">Comisión Estimada ($)</th>
+          </tr>
+        `;
+
+        policies.forEach(p => {
+          const prem = p.premium || 0;
+          const rate = p.commissionRate || 20;
+          const commVal = (prem * rate) / 100;
+          const tr = document.createElement('tr');
+          tr.className = 'border-b border-gray-50 last:border-0 hover:bg-gray-50/50';
+          tr.innerHTML = `
+            <td class="py-3 pr-4 font-mono font-bold text-brand-navy">${p.policyNumber}</td>
+            <td class="py-3 pr-4 text-gray-800 font-medium">${p.clientName}</td>
+            <td class="py-3 pr-4 text-gray-600">${p.company}</td>
+            <td class="py-3 pr-4 text-right text-gray-700 font-medium whitespace-nowrap">$${prem.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            <td class="py-3 pr-4 text-right font-bold text-gray-600">${rate.toFixed(1)}%</td>
+            <td class="py-3 text-right font-black text-brand-teal whitespace-nowrap">$${commVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        tfoot.innerHTML = `
+          <tr class="border-t-2 border-gray-200 bg-emerald-50/50 font-bold">
+            <td colspan="3" class="py-3 pr-4 text-brand-navy uppercase tracking-wider text-[11px]">Totales Proyectados Cartera:</td>
+            <td class="py-3 pr-4 text-right font-bold text-gray-700 text-xs">$${totalCartera.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            <td class="py-3 pr-4 text-right text-gray-400">-</td>
+            <td class="py-3 text-right font-black text-brand-teal text-sm">$${totalComision.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+          </tr>
+        `;
+      }
 
       modal.classList.remove('hidden');
     }
