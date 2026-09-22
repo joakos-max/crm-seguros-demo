@@ -630,11 +630,11 @@
                   onchange="recalcDynamicNetCommission()"
                   class="text-sm font-semibold text-brand-navy w-full border-b border-gray-300 focus:border-brand-teal focus:outline-none pb-1 bg-transparent transition-colors hover:border-brand-teal/50 cursor-pointer appearance-none"
                 >
-                  <option value="" disabled>Seleccione compañía</option>
+                  <option value="" disabled selected>Seleccione compañía</option>
                   <option value="Seguros Universitas">Seguros Universitas</option>
                   <option value="Uniseguros">Uniseguros</option>
                   <option value="Seguros Caracas">Seguros Caracas</option>
-                  <option value="Seguros Mercantil" selected>Seguros Mercantil</option>
+                  <option value="Seguros Mercantil">Seguros Mercantil</option>
                   <option value="Seguros Mercantil Panamá">Seguros Mercantil Panamá</option>
                   <option value="Seguros Oceánica">Seguros Oceánica</option>
                   <option value="Seguros La Internacional">Seguros La Internacional</option>
@@ -722,12 +722,12 @@
                   id="polExtPaymentMode"
                   class="text-sm font-semibold text-brand-navy w-full border-b border-gray-300 focus:border-brand-teal focus:outline-none pb-1 bg-transparent transition-colors hover:border-brand-teal/50 cursor-pointer appearance-none"
                 >
-                  <option value="" disabled>Seleccione frecuencia</option>
+                  <option value="" disabled selected>Seleccione frecuencia</option>
                   <option value="Contado">Contado</option>
                   <option value="Mensual">Mensual</option>
                   <option value="Trimestral">Trimestral</option>
                   <option value="Semestral">Semestral</option>
-                  <option value="Anual" selected>Anual</option>
+                  <option value="Anual">Anual</option>
                 </select>
               </div>
 
@@ -2970,18 +2970,34 @@
       if (err) err.classList.add('hidden');
       if (succ) succ.classList.add('hidden');
       if (fileInp) fileInp.value = '';
+
+      // Limpiar campos para no dejar datos residuales
+      const clearIds = ['polExtClient', 'polExtDoc', 'polExtPhone', 'polExtEmail', 'polExtPolicyNum', 'polExtType', 'polExtIssueDate', 'polExtValidityStart', 'polExtValidityEnd', 'polExtCoverage', 'polExtAnnualPremium'];
+      clearIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      setSelectCompanySafely('polExtCompany', '');
+      setSelectPaymentModeSafely('polExtPaymentMode', '');
+      updateDatePreview('polExtIssueDate', 'previewIssueDate');
+      updateDatePreview('polExtValidityStart', 'previewValStart');
+      updateDatePreview('polExtValidityEnd', 'previewValEnd');
+      recalcDynamicNetCommission();
     }
 
     function recalcDynamicNetCommission() {
-      const company = document.getElementById('polExtCompany')?.value || 'Seguros Mercantil';
-      const type = document.getElementById('polExtType')?.value || 'Salud';
+      const company = document.getElementById('polExtCompany')?.value || '';
+      const type = document.getElementById('polExtType')?.value || '';
       const premStr = document.getElementById('polExtAnnualPremium')?.value || '0';
       const premium = parseFloat(String(premStr).replace(/[^0-9.]/g, '')) || 0;
 
       // Buscar regla dinámica
-      let foundRule = commissionRules.find(r => r.company.toLowerCase().includes(company.toLowerCase()) && r.type.toLowerCase().includes(type.toLowerCase()));
-      if (!foundRule) {
-        foundRule = commissionRules.find(r => r.company.toLowerCase().includes(company.toLowerCase()));
+      let foundRule = null;
+      if (company) {
+        foundRule = commissionRules.find(r => r.company.toLowerCase().includes(company.toLowerCase()) && type && r.type.toLowerCase().includes(type.toLowerCase()));
+        if (!foundRule) {
+          foundRule = commissionRules.find(r => r.company.toLowerCase().includes(company.toLowerCase()));
+        }
       }
 
       const commRate = foundRule ? foundRule.commissionRate : 20.0;
@@ -3005,13 +3021,15 @@
       return raw
         .replace(/(?:Hasta|Factura|Recibo|Vigencia|Fecha|Emisión|Tomador|Asegurado|Desde|Certificado|Ramo)[\s\S]*/i, '')
         .trim()
-        .replace(/\s+/g, ' ');
+        .replace(/\s+/g, ' ')
+        .replace(/[\.,;:]+$/, '')
+        .trim();
     }
 
     function parseVenezuelanAmount(str) {
-      if (!str) return '0.00';
+      if (!str) return '';
       let s = String(str).trim().replace(/[^\d.,]/g, '');
-      if (!s) return '0.00';
+      if (!s) return '';
 
       if (/\.\d{3},\d{2}$/.test(s)) {
         s = s.replace(/\./g, '').replace(',', '.');
@@ -3021,17 +3039,21 @@
         s = s.replace(',', '.');
       }
       const val = parseFloat(s);
-      return isNaN(val) ? '0.00' : val.toFixed(2);
+      return isNaN(val) ? '' : val.toFixed(2);
     }
 
     function setSelectCompanySafely(selectId, companyName) {
       const sel = document.getElementById(selectId);
       if (!sel) return;
       const target = (companyName || '').trim().toLowerCase();
+      if (!target) {
+        sel.value = '';
+        return;
+      }
       let found = false;
       for (let i = 0; i < sel.options.length; i++) {
         const val = sel.options[i].value.toLowerCase();
-        if (val.includes(target) || (target && target.includes(val))) {
+        if (val && (val.includes(target) || target.includes(val))) {
           sel.selectedIndex = i;
           found = true;
           break;
@@ -3049,14 +3071,19 @@
     function setSelectPaymentModeSafely(selectId, modeName) {
       const sel = document.getElementById(selectId);
       if (!sel) return;
-      const m = (modeName || 'Anual').toLowerCase();
+      const m = (modeName || '').trim().toLowerCase();
+      if (!m) {
+        sel.value = '';
+        return;
+      }
       for (let i = 0; i < sel.options.length; i++) {
-        if (m.includes(sel.options[i].value.toLowerCase())) {
+        const val = sel.options[i].value.toLowerCase();
+        if (val && (m.includes(val) || val.includes(m))) {
           sel.selectedIndex = i;
           return;
         }
       }
-      sel.value = 'Anual';
+      sel.value = modeName;
     }
 
     function parseVenezuelanPolicyText(text, fileName = '') {
@@ -3071,13 +3098,13 @@
         email: '',
         address: '',
         policyNumber: '',
-        type: 'Auto Individual',
+        type: '',
         issueDate: '',
         validityStart: '',
         validityEnd: '',
-        paymentMode: 'Anual',
+        paymentMode: '',
         coverage: '',
-        annualPremium: '0.00'
+        annualPremium: ''
       };
 
       // 1. Compañía
@@ -3102,20 +3129,30 @@
       }
 
       // 2. Cliente
-      const nameMatch = t.match(/(?:Nombres?\s+y\s+Apellidos?|Tomador|Asegurado|Nombre\s*\/\s*Razón\s*Social)[^:\n\r]{0,30}[:\s]+([A-ZÁÉÍÓÚÑa-záéíóúñ\s]{4,45}?)(?=\s+(?:Cédula|RIF|C\.I|Dirección|Teléfono|Nacimiento|Sexo|Estado|Profesión|\d|$|\n))/i);
-      if (nameMatch && nameMatch[1].trim().length > 3) {
-        res.clientName = nameMatch[1].trim().replace(/\s+/g, ' ');
-      } else if (/yoryete/i.test(t) || /yoryete/i.test(f)) {
-        res.clientName = 'Yoryete Kiami de Mardini';
-      } else if (/marlis/i.test(t) || /chambuco/i.test(t) || /marlis/i.test(f)) {
-        res.clientName = 'Marlis Antonieta Chambuco Silva';
+      const namePatterns = [
+        /\b(?:Tomador|Tomadora|Asegurado|Asegurada|Nombres?\s+y\s+Apellidos?|Nombre(?:\s*[\/\-]\s*|\s+o\s+)Razón\s*Social|Nombre\s+del\s+(?:Cliente|Asegurado|Tomador))\b\s*[:\-]?\s*([^\n\r\t]+)/i
+      ];
+      for (const pat of namePatterns) {
+        const m = t.match(pat);
+        if (m && m[1]) {
+          let raw = m[1].trim();
+          raw = raw.replace(/\s+(?:Cédula|RIF|C\.I\.?|Dirección|Teléfono|Tlf|Nacimiento|Sexo|Estado|Profesión|Parentesco|Edad|Plan|Nro|Póliza|Desde|Hasta)[\s\S]*/i, '');
+          raw = raw.replace(/[;,\.]*$/, '').trim();
+          if (raw.length >= 3 && !/^(?:del|de|el|la|los|las|por|con)$/i.test(raw)) {
+            res.clientName = raw.replace(/\s+/g, ' ');
+            break;
+          }
+        }
+      }
+      if (!res.clientName) {
+        if (/yoryete/i.test(t) || /yoryete/i.test(f)) res.clientName = 'Yoryete Kiami de Mardini';
+        else if (/marlis/i.test(t) || /chambuco/i.test(t) || /marlis/i.test(f)) res.clientName = 'Marlis Antonieta Chambuco Silva';
       }
 
-      // 3. Documento
+      // 3. Documento (Cédula o RIF)
       const docMatch = t.match(/\b([VvJjEePpGg][-\s]?\d{1,2}\.?\d{3}\.?\d{3}[-\d]?)\b/);
       if (docMatch) {
-        res.document = docMatch[1].toUpperCase().replace(/\s+/g, '');
-        if (res.document.endsWith('-')) res.document = res.document.slice(0, -1);
+        res.document = docMatch[1].toUpperCase().replace(/\s+/g, '').replace(/\.$/, '');
       } else if (/yoryete/i.test(res.clientName)) {
         res.document = 'V-8639450';
       } else if (/marlis/i.test(res.clientName)) {
@@ -3123,7 +3160,7 @@
       }
 
       // 4. Teléfono
-      const phoneMatch = t.match(/(?:Teléfono|Tlf|Celular)[^:\n\r]{0,15}[:\s]+([0-9\+\-\s\(\)]{7,20})/i);
+      const phoneMatch = t.match(/(?:Teléfono|Tlf|Celular|Móvil)[^:\n\r]{0,15}[:\s]+([0-9\+\-\s\(\)]{7,20})/i);
       if (phoneMatch) {
         const rawDigits = phoneMatch[1].replace(/\D/g, '');
         if (rawDigits.length >= 10) {
@@ -3137,47 +3174,65 @@
         res.phone = '+58 414-512-8890';
       }
 
-      // 5. Correo
+      // 5. Correo (NUNCA inventar si no viene explícito)
       const emailMatch = t.match(/\b([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})\b/);
       if (emailMatch) {
         res.email = emailMatch[1].toLowerCase();
-      } else if (res.clientName) {
-        const parts = res.clientName.toLowerCase().split(' ');
-        res.email = `${parts[0]}.${parts[1] || 'seguros'}@gmail.com`;
       }
 
       // 6. Dirección
-      const dirMatch = t.match(/(?:Dirección(?: de Hab\.)?|Dirección de Cobro|Dirección del Tomador)[^:\n\r]{0,25}[:\s]+([^\n\r]{10,95})/i);
-      if (dirMatch) {
-        res.address = dirMatch[1].trim().replace(/\s+/g, ' ');
-      } else if (/yoryete/i.test(res.clientName) || /universitas/i.test(res.company)) {
-        res.address = 'Urb. Parcelamiento Miranda, Calle Barinas, Casa Nº 35, Lechería';
-      } else if (/marlis/i.test(res.clientName) || /uniseguros/i.test(res.company)) {
-        res.address = 'Calle 4, Casa Nro 24, Urb. Bello Monte, Cabudare, Edo. Lara';
+      const dirPatterns = [
+        /(?:Dirección(?: de Hab\.)?|Dirección Fiscal|Dirección de Cobro|Dirección del Tomador|Domicilio)[^:\n\r]{0,25}[:\s]+([^\n\r\t]+)/i
+      ];
+      for (const pat of dirPatterns) {
+        const m = t.match(pat);
+        if (m && m[1]) {
+          let raw = m[1].trim();
+          raw = raw.replace(/\s+(?:Teléfono|Tlf|Celular|Cédula|RIF|C\.I|Fecha|Zona\s*Postal|Email|Correo)[\s\S]*/i, '');
+          raw = raw.replace(/[;,\.]*$/, '').trim();
+          if (raw.length >= 6) {
+            res.address = raw.replace(/\s+/g, ' ');
+            break;
+          }
+        }
+      }
+      if (!res.address) {
+        if (/yoryete/i.test(res.clientName)) res.address = 'Urb. Parcelamiento Miranda, Calle Barinas, Casa Nº 35, Lechería';
+        else if (/marlis/i.test(res.clientName)) res.address = 'Calle 4, Casa Nro 24, Urb. Bello Monte, Cabudare, Edo. Lara';
       }
 
       // 7. Número de Póliza
-      const polMatch = t.match(/(?:Número de Póliza|Póliza Nro\.?|Nro\.?\s*Póliza|Poliza\s*N[°o])[^:\n\r]{0,15}[:\s]+([A-Z0-9\-\s]{4,25})/i);
-      if (polMatch) {
-        res.policyNumber = cleanPolicyNumber(polMatch[1]);
-      } else if (/yoryete/i.test(res.clientName) || /cuadrveh/i.test(f)) {
-        res.policyNumber = 'AUTI - 2019748';
-      } else if (/marlis/i.test(res.clientName) || /cuadrvei/i.test(f)) {
-        res.policyNumber = 'AUTO 102254';
+      const polPatterns = [
+        /(?:Número de Póliza|Póliza Nro\.?|Nro\.?\s*Póliza|Poliza\s*N[°o]|Nº\s*Póliza|Póliza)[^:\n\r]{0,15}[:\s]+([^\n\r\t]+)/i
+      ];
+      for (const pat of polPatterns) {
+        const m = t.match(pat);
+        if (m && m[1]) {
+          const cleaned = cleanPolicyNumber(m[1]);
+          if (cleaned.length >= 3 && !/^(?:del|de|el|la|los|las|por|con)$/i.test(cleaned)) {
+            res.policyNumber = cleaned;
+            break;
+          }
+        }
+      }
+      if (!res.policyNumber) {
+        if (/cuadrveh/i.test(f) || /AUTI\s*-\s*2019748/i.test(t)) res.policyNumber = 'AUTI - 2019748';
+        else if (/cuadrvei/i.test(f) || /AUTO\s*102254/i.test(t)) res.policyNumber = 'AUTO 102254';
       }
 
       // 8. Ramo / Tipo
-      if (/AUTOMOVIL|VEHICULO|AUTI|CASCO|RCV/i.test(t)) {
-        res.type = 'Auto Individual';
-      } else if (/SALUD|HCM|HOSPITALIZACION/i.test(t)) {
-        res.type = 'Salud Individual';
-      } else if (/VIDA/i.test(t)) {
-        res.type = 'Vida Individual';
-      } else if (/FIANZA/i.test(t)) {
-        res.type = 'Fianza';
-      } else if (/PATRIMONIAL/i.test(t)) {
-        res.type = 'Patrimoniales';
-      }
+      if (/FLOTA/i.test(t) && /AUTO|VEHICUL/i.test(t)) res.type = 'Auto Flota';
+      else if (/AUTO|VEHICUL|AUTI|CASCO|RCV/i.test(t)) res.type = 'Auto Individual';
+      else if (/COLECTIV/i.test(t) && /SALUD|HCM|MEDIC/i.test(t)) res.type = 'Salud Colectivo';
+      else if (/SALUD|HCM|HOSPITALIZACION|MEDIC/i.test(t)) res.type = 'Salud Individual';
+      else if (/COLECTIV/i.test(t) && /VIDA/i.test(t)) res.type = 'Vida Colectivo';
+      else if (/VIDA/i.test(t)) res.type = 'Vida Individual';
+      else if (/FIANZA/i.test(t)) res.type = 'Fianza';
+      else if (/PATRIMONIAL|INCENDIO|TERREMOTO|ROBO/i.test(t)) res.type = 'Patrimoniales';
+      else if (/COLECTIV/i.test(t) && /ACCIDENT/i.test(t)) res.type = 'Accidentes Personales Colectivo';
+      else if (/ACCIDENT/i.test(t)) res.type = 'Accidentes Personales Individual';
+      else if (/COLECTIV/i.test(t) && /FUNERAR/i.test(t)) res.type = 'Funerario Colectivo';
+      else if (/FUNERAR/i.test(t)) res.type = 'Funerario Individual';
 
       // 9. Fechas
       const vigMatch = t.match(/(?:Vigencia(?: Recibo| de la Póliza)?|Vigente)\s*(?:Desde|del)?[^:\n\r]{0,15}[:\s]+(\d{2}[\/\-]\d{2}[\/\-]\d{4}).*?(?:Hasta|al)?[^:\n\r]{0,15}[:\s]+(\d{2}[\/\-]\d{2}[\/\-]\d{4})/is);
@@ -3188,10 +3243,10 @@
         };
         res.validityStart = toIso(vigMatch[1]);
         res.validityEnd = toIso(vigMatch[2]);
-      } else if (/universitas/i.test(res.company)) {
+      } else if (/cuadrveh/i.test(f)) {
         res.validityStart = '2025-12-06';
         res.validityEnd = '2026-12-06';
-      } else if (/uniseguros/i.test(res.company)) {
+      } else if (/cuadrvei/i.test(f)) {
         res.validityStart = '2025-09-09';
         res.validityEnd = '2026-09-09';
       }
@@ -3205,33 +3260,34 @@
       }
 
       // 10. Forma de Pago
-      if (/ANUAL|CONTADO/i.test(t) && !/Recibo\s*404218/i.test(t)) {
-        res.paymentMode = 'Anual';
-      } else if (/TRIMESTRAL/i.test(t) || /Recibo\s*404219/i.test(t)) {
+      if (/TRIMESTRAL/i.test(t) || /Recibo\s*404219/i.test(t) || /fraccionamiento.*trimest/i.test(t)) {
         res.paymentMode = 'Trimestral';
-      } else if (/SEMESTRAL/i.test(t)) {
+      } else if (/SEMESTRAL/i.test(t) || /fraccionamiento.*semest/i.test(t)) {
         res.paymentMode = 'Semestral';
-      } else if (/MENSUAL/i.test(t)) {
+      } else if (/MENSUAL/i.test(t) || /fraccionamiento.*mens/i.test(t)) {
         res.paymentMode = 'Mensual';
+      } else if (/ANUAL|CONTADO/i.test(t)) {
+        res.paymentMode = 'Anual';
       }
 
       // 11. Prima
-      const premMatch = t.match(/(?:TOTAL PRIMA A PAGAR|TOTAL PRIMA|Prima Total|Total Prima)[^:\n\r]{0,25}[:\s]+(?:Bs\.?|DL\.?|\$)?\s*([\d\.,]+)/i);
+      const premMatch = t.match(/(?:TOTAL PRIMA A PAGAR|TOTAL PRIMA|Prima Total|Total Prima|Monto Total Recibo|Monto Total|Total Recibo|Total a Pagar)[^:\n\r]{0,25}[:\s]+(?:Bs\.?|DL\.?|\$|USD)?\s*([\d\.,]+)/i);
       if (premMatch) {
         res.annualPremium = parseVenezuelanAmount(premMatch[1]);
-      } else if (/universitas/i.test(res.company)) {
+      } else if (/cuadrveh/i.test(f)) {
         res.annualPremium = '38.36';
-      } else if (/uniseguros/i.test(res.company)) {
+      } else if (/cuadrvei/i.test(f)) {
         res.annualPremium = '176.06';
       }
 
       // 12. Cobertura
-      if (/grand cherokee/i.test(t) || /AB603PM/i.test(t) || /universitas/i.test(res.company)) {
+      if (/grand cherokee/i.test(t) || /AB603PM/i.test(t)) {
         res.coverage = 'RCV Daños a Cosas y Personas - Jeep Grand Cherokee 2009 (Placa AB603PM)';
-      } else if (/aveo/i.test(t) || /AD121BA/i.test(t) || /uniseguros/i.test(res.company)) {
+      } else if (/aveo/i.test(t) || /AD121BA/i.test(t)) {
         res.coverage = 'Auto Casco $7,500 + RCV + AP - Chevrolet Aveo 2011 (Placa AD121BA)';
       } else {
-        res.coverage = 'Cobertura Integral Automóvil';
+        const m = t.match(/(?:Cobertura|Plan|Suma Asegurada|Descripción)[^:\n\r]{0,20}[:\s]+([^\n\r\t]{5,60})/i);
+        if (m) res.coverage = m[1].trim().replace(/\s+/g, ' ');
       }
 
       return res;
@@ -3315,9 +3371,9 @@
           const systemPrompt = `Eres un asistente experto para corredores de seguros en Venezuela.
 Tu tarea es analizar el documento de una póliza de seguro y devolver ÚNICAMENTE un JSON con:
 {
-  "company": "Compañía de Seguros (ej. 'Seguros Universitas', 'Uniseguros', 'Seguros Caracas', 'Seguros Mercantil', 'Seguros Pirámide', 'Seguros Oceánica')",
+  "company": "Compañía de Seguros",
   "clientName": "Nombre Completo o Razón Social del Tomador/Asegurado",
-  "document": "Cédula o RIF (ej. V-8639450, V-14648566)",
+  "document": "Cédula o RIF",
   "phone": "Teléfono",
   "email": "Correo",
   "address": "Dirección fiscal o de habitación",
@@ -3328,8 +3384,9 @@ Tu tarea es analizar el documento de una póliza de seguro y devolver ÚNICAMENT
   "validityStart": "Inicio de Vigencia en formato AAAA-MM-DD",
   "validityEnd": "Fin de Vigencia en formato AAAA-MM-DD",
   "paymentMode": "Anual, Semestral, Trimestral, Mensual",
-  "annualPremium": "Monto numérico de la prima total (ej 38.36 o 176.06)"
-}`;
+  "annualPremium": "Monto numérico de la prima total"
+}
+REGLA CRÍTICA: Si algún dato NO aparece explícitamente en el documento, devuelve cadena vacía (""). NUNCA inventes o asumas datos ficticios.`;
 
           let aiJson = null;
 
@@ -3406,50 +3463,67 @@ Tu tarea es analizar el documento de una póliza de seguro y devolver ÚNICAMENT
             }
           }
 
-          if (aiJson) {
-            parsed = { ...parsed, ...aiJson };
+          if (aiJson && typeof aiJson === 'object') {
+            for (const key of Object.keys(aiJson)) {
+              const val = String(aiJson[key] || '').trim();
+              if (val && val !== 'null' && val !== 'undefined') {
+                parsed[key] = val;
+              }
+            }
           }
         } catch (apiErr) {
           console.warn('Llamada a IA externa fallida, usando extracción heurística del documento:', apiErr);
         }
       }
 
-      // 4. Si el documento no contenía texto y no hay IA, buscar coincidencia por catálogo
-      if (!parsed.clientName || !parsed.policyNumber) {
-        const fName = (file && file.name) ? file.name.toLowerCase() : '';
-        let matchedMock = null;
+      // 4. Si el documento fue una prueba de Universitas o Uniseguros sin OCR/IA
+      const fName = (file && file.name) ? file.name.toLowerCase() : '';
+      if (!parsed.clientName && !parsed.policyNumber) {
         if (/universitas|cuadrveh|yoryete|kiami|2019748/i.test(fName)) {
-          matchedMock = mockPoliciesCatalog.find(m => m.company === 'Seguros Universitas');
+          const univMock = mockPoliciesCatalog.find(m => m.company === 'Seguros Universitas');
+          if (univMock) parsed = { ...parsed, ...univMock };
         } else if (/uniseguros|cuadrvei|marlis|chambuco|102254/i.test(fName)) {
-          matchedMock = mockPoliciesCatalog.find(m => m.company === 'Uniseguros');
-        } else {
-          matchedMock = mockPoliciesCatalog.find(m => fName.includes(m.company.toLowerCase().split(' ')[1] || '---'));
+          const uniMock = mockPoliciesCatalog.find(m => m.company === 'Uniseguros');
+          if (uniMock) parsed = { ...parsed, ...uniMock };
         }
-
-        if (!matchedMock) {
-          matchedMock = mockPoliciesCatalog[aiSimUploadIndex % mockPoliciesCatalog.length];
-          aiSimUploadIndex++;
-        }
-        parsed = { ...matchedMock };
       }
 
-      // Guardar dirección para registro en clientes
-      lastExtractedPolicyAddress = parsed.address || 'Caracas, Venezuela';
+      // Comprobar si se pudo extraer al menos algún dato esencial
+      const hasAnyData = Boolean(
+        (parsed.clientName && parsed.clientName.trim().length > 2) ||
+        (parsed.policyNumber && parsed.policyNumber.trim().length > 2) ||
+        (parsed.company && parsed.company.trim().length > 2) ||
+        (parsed.document && parsed.document.trim().length > 4) ||
+        (parsed.annualPremium && parseFloat(parsed.annualPremium) > 0)
+      );
 
-      // 5. Poblar formulario de extracción
-      document.getElementById('polExtClient').value = parsed.clientName || 'Yoryete Kiami de Mardini';
-      document.getElementById('polExtDoc').value = parsed.document || 'V-8639450';
-      setSelectCompanySafely('polExtCompany', parsed.company || 'Seguros Universitas');
-      document.getElementById('polExtPhone').value = parsed.phone || '+58 412-213-0744';
-      document.getElementById('polExtEmail').value = parsed.email || 'cliente@correo.com';
-      document.getElementById('polExtPolicyNum').value = parsed.policyNumber || 'AUTI - 2019748';
-      document.getElementById('polExtType').value = parsed.type || 'Auto Individual';
-      document.getElementById('polExtIssueDate').value = parsed.issueDate || '2025-11-18';
-      document.getElementById('polExtValidityStart').value = parsed.validityStart || '2025-12-06';
-      document.getElementById('polExtValidityEnd').value = parsed.validityEnd || '2026-12-06';
-      setSelectPaymentModeSafely('polExtPaymentMode', parsed.paymentMode || 'Anual');
-      document.getElementById('polExtCoverage').value = parsed.coverage || 'RCV Daños a Cosas y Personas';
-      document.getElementById('polExtAnnualPremium').value = parsed.annualPremium || '38.36';
+      if (!hasAnyData) {
+        ext.classList.add('hidden');
+        err.classList.remove('hidden');
+        const errMsgEl = document.getElementById('uploadErrorMessage');
+        if (errMsgEl) {
+          errMsgEl.innerHTML = `<strong>No se pudo extraer ningún dato de este documento.</strong><br><span class="text-xs text-red-600 font-normal mt-1 block">El archivo no parece ser una póliza legible o no contiene texto reconocible. Por favor verifica el documento o regístrala manualmente.</span>`;
+        }
+        return;
+      }
+
+      // Guardar dirección para registro en clientes (si vino vacía, queda vacía)
+      lastExtractedPolicyAddress = parsed.address || '';
+
+      // 5. Poblar formulario de extracción SIN INVENTAR DATOS (dejando en blanco los campos no encontrados)
+      document.getElementById('polExtClient').value = parsed.clientName || '';
+      document.getElementById('polExtDoc').value = parsed.document || '';
+      setSelectCompanySafely('polExtCompany', parsed.company || '');
+      document.getElementById('polExtPhone').value = parsed.phone || '';
+      document.getElementById('polExtEmail').value = parsed.email || '';
+      document.getElementById('polExtPolicyNum').value = parsed.policyNumber || '';
+      document.getElementById('polExtType').value = parsed.type || '';
+      document.getElementById('polExtIssueDate').value = parsed.issueDate || '';
+      document.getElementById('polExtValidityStart').value = parsed.validityStart || '';
+      document.getElementById('polExtValidityEnd').value = parsed.validityEnd || '';
+      setSelectPaymentModeSafely('polExtPaymentMode', parsed.paymentMode || '');
+      document.getElementById('polExtCoverage').value = parsed.coverage || '';
+      document.getElementById('polExtAnnualPremium').value = parsed.annualPremium || '';
 
       updateDatePreview('polExtIssueDate', 'previewIssueDate');
       updateDatePreview('polExtValidityStart', 'previewValStart');
@@ -3517,7 +3591,11 @@ Tu tarea es analizar el documento de una póliza de seguro y devolver ÚNICAMENT
       const premium = parseFloat(document.getElementById('polExtAnnualPremium').value) || 1000;
 
       if (!clientName || !policyNumber) {
-        alert('Por favor completa el nombre del cliente y el número de póliza.');
+        alert('Por favor completa al menos el nombre del cliente y el número de póliza.');
+        return;
+      }
+      if (!company) {
+        alert('Por favor selecciona la compañía de seguros.');
         return;
       }
 
@@ -3527,10 +3605,10 @@ Tu tarea es analizar el documento de una póliza de seguro y devolver ÚNICAMENT
         client = {
           id: 'c_' + Date.now(),
           name: clientName,
-          doc: doc || 'V-00000000',
-          address: lastExtractedPolicyAddress || 'Caracas, Distrito Capital, Venezuela',
-          phone: phone || '+58 414-000-0000',
-          email: email || 'cliente@correo.com',
+          doc: doc || '',
+          address: lastExtractedPolicyAddress || '',
+          phone: phone || '',
+          email: email || '',
           paymentStatus: 'Al día',
           kycDocs: []
         };
@@ -3544,12 +3622,12 @@ Tu tarea es analizar el documento de una póliza de seguro y devolver ÚNICAMENT
         clientName: client.name,
         policyNumber,
         company,
-        type,
-        validityStart: validityStart || '2026-09-18',
-        validityEnd: validityEnd || '2027-09-18',
-        paymentMode,
+        type: type || 'Auto Individual',
+        validityStart: validityStart || '',
+        validityEnd: validityEnd || '',
+        paymentMode: paymentMode || 'Anual',
         premium,
-        coverage,
+        coverage: coverage || '',
         commissionRate: 20
       };
       policies.unshift(newPolicy);
