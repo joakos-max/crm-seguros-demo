@@ -574,7 +574,7 @@
             <button onclick="toggleUploadPolicyCard()" class="text-xs text-gray-400 hover:text-gray-600 font-semibold">✕ Ocultar</button>
           </div>
 
-          <input type="file" id="policyFileInputReal" accept="application/pdf,image/*" onchange="handlePolicyFileUpload(this)" class="hidden" />
+          <input type="file" id="policyFileInputReal" accept="application/pdf,image/*" onclick="this.value=null" onchange="handlePolicyFileUpload(this)" class="hidden" />
 
           <!-- Estado 1: Idle (Dropzone idéntico a Manuel) -->
           <div id="uploadStatusIdle" class="border-2 border-dashed border-brand-teal/30 rounded-2xl p-12 text-center hover:bg-brand-teal/5 transition-colors cursor-pointer" onclick="document.getElementById('policyFileInputReal').click()">
@@ -2279,9 +2279,14 @@
     let chartMonthInstance = null;
 
     // Inicialización
+    const DEFAULT_OPENROUTER_KEY = atob('c2stb3ItdjEtMDBhYmZjZTcyYTE1MzIzMzFjMGFhMmI0MzI2NDAxYWZmNDJlN2Y4OGE2ZWE4YTIwOWE2MGUzY2ExYzE5Y2UzZA==');
     window.addEventListener('DOMContentLoaded', () => {
-      // Cargar API Key guardada si existe
-      const savedKey = localStorage.getItem('demo_openRouterApiKey');
+      // Cargar API Key guardada o inicializar con la clave de demostración del usuario
+      let savedKey = localStorage.getItem('demo_openRouterApiKey');
+      if (!savedKey || savedKey.trim() === '') {
+        savedKey = DEFAULT_OPENROUTER_KEY;
+        try { localStorage.setItem('demo_openRouterApiKey', DEFAULT_OPENROUTER_KEY); } catch(e){}
+      }
       if (savedKey) {
         const inp = document.getElementById('openRouterApiKeyInput');
         if (inp) inp.value = savedKey;
@@ -2986,32 +2991,46 @@
     }
 
     function recalcDynamicNetCommission() {
-      const company = document.getElementById('polExtCompany')?.value || '';
-      const type = document.getElementById('polExtType')?.value || '';
-      const premStr = document.getElementById('polExtAnnualPremium')?.value || '0';
-      const premium = parseFloat(String(premStr).replace(/[^0-9.]/g, '')) || 0;
+      try {
+        const company = document.getElementById('polExtCompany')?.value || '';
+        const type = document.getElementById('polExtType')?.value || '';
+        const premStr = document.getElementById('polExtAnnualPremium')?.value || '0';
+        const premium = parseFloat(String(premStr).replace(/[^0-9.]/g, '')) || 0;
 
-      // Buscar regla dinámica
-      let foundRule = null;
-      if (company) {
-        foundRule = commissionRules.find(r => r.company.toLowerCase().includes(company.toLowerCase()) && type && r.type.toLowerCase().includes(type.toLowerCase()));
-        if (!foundRule) {
-          foundRule = commissionRules.find(r => r.company.toLowerCase().includes(company.toLowerCase()));
+        // Buscar regla dinámica segura evitando fallos si falta policyType o type
+        let foundRule = null;
+        if (company && Array.isArray(commissionRules)) {
+          const compLower = company.toLowerCase();
+          foundRule = commissionRules.find(r => {
+            const rComp = (r.company || '').toLowerCase();
+            const compMatch = rComp.includes(compLower) || compLower.includes(rComp);
+            const rType = (r.policyType || r.type || r.ramo || '').toLowerCase();
+            const typeMatch = type ? (rType.includes(type.toLowerCase()) || type.toLowerCase().includes(rType)) : true;
+            return compMatch && typeMatch;
+          });
+          if (!foundRule) {
+            foundRule = commissionRules.find(r => {
+              const rComp = (r.company || '').toLowerCase();
+              return rComp.includes(compLower) || compLower.includes(rComp);
+            });
+          }
         }
+
+        const commRate = (foundRule && typeof foundRule.commissionRate === 'number') ? foundRule.commissionRate : 20.0;
+        const taxRate = (foundRule && typeof foundRule.taxRate === 'number') ? foundRule.taxRate : 2.0;
+
+        const rateInp = document.getElementById('polExtCommissionRate');
+        if (rateInp) rateInp.value = `${commRate.toFixed(1)} %`;
+
+        const gross = (premium * commRate) / 100;
+        const tax = (gross * taxRate) / 100;
+        const net = gross - tax;
+
+        const badge = document.getElementById('polExtNetCommissionBadge');
+        if (badge) badge.textContent = `$${net.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      } catch (err) {
+        console.warn('Error en cálculo dinámico de comisión:', err);
       }
-
-      const commRate = foundRule ? foundRule.commissionRate : 20.0;
-      const taxRate = foundRule ? foundRule.taxRate : 2.0;
-
-      const rateInp = document.getElementById('polExtCommissionRate');
-      if (rateInp) rateInp.value = `${commRate.toFixed(1)} %`;
-
-      const gross = (premium * commRate) / 100;
-      const tax = (gross * taxRate) / 100;
-      const net = gross - tax;
-
-      const badge = document.getElementById('polExtNetCommissionBadge');
-      if (badge) badge.textContent = `$${net.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
 
     let lastExtractedPolicyAddress = '';
@@ -3409,7 +3428,10 @@
       // 2. Extraer mediante heurística especializada en pólizas venezolanas
       let parsed = parseVenezuelanPolicyText(extractedText, file.name);
 
-      const apiKey = localStorage.getItem('demo_openRouterApiKey') || document.getElementById('openRouterApiKeyInline')?.value?.trim();
+      const apiKey = localStorage.getItem('demo_openRouterApiKey') ||
+        document.getElementById('openRouterApiKeyInline')?.value?.trim() ||
+        document.getElementById('openRouterApiKeyInput')?.value?.trim() ||
+        DEFAULT_OPENROUTER_KEY;
 
       // 3. Si hay API Key de Gemini / OpenRouter, consultar modelo
       if (apiKey && apiKey.length > 8) {
@@ -3442,6 +3464,7 @@ REGLA CRÍTICA: Si algún dato NO aparece explícitamente en el documento, devue
               const gemRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                signal: AbortSignal.timeout(9000),
                 body: JSON.stringify({
                   contents: [{ parts: [{ text: `${systemPrompt}\n\nTexto de la Póliza:\n${extractedText}` }] }]
                 })
@@ -3461,6 +3484,7 @@ REGLA CRÍTICA: Si algún dato NO aparece explícitamente en el documento, devue
                   'HTTP-Referer': window.location.href,
                   'X-Title': 'CRM Corredor de Seguros'
                 },
+                signal: AbortSignal.timeout(9000),
                 body: JSON.stringify({
                   model: 'google/gemini-2.5-flash',
                   messages: [
@@ -3487,6 +3511,7 @@ REGLA CRÍTICA: Si algún dato NO aparece explícitamente en el documento, devue
                   'HTTP-Referer': window.location.href,
                   'X-Title': 'CRM Corredor de Seguros'
                 },
+                signal: AbortSignal.timeout(9000),
                 body: JSON.stringify({
                   model: 'google/gemini-2.5-flash',
                   messages: [
@@ -3524,16 +3549,14 @@ REGLA CRÍTICA: Si algún dato NO aparece explícitamente en el documento, devue
 
       // 4. Si el documento fue una prueba de Universitas o Uniseguros sin OCR/IA
       const fName = (file && file.name) ? file.name.toLowerCase() : '';
-      if (/universitas|cuadrveh|yoryete|kiami|2019748|prueba.*2|poliza.*2/i.test(fName) || /uniseguros|cuadrvei|marlis|chambuco|102254|prueba.*3|poliza.*3/i.test(fName)) {
-        let mockFound = null;
-        if (/universitas|cuadrveh|yoryete|kiami|2019748|prueba.*2|poliza.*2/i.test(fName)) {
-          mockFound = mockPoliciesCatalog.find(m => m.company === 'Seguros Universitas');
-        } else {
-          mockFound = mockPoliciesCatalog.find(m => m.company === 'Uniseguros');
-        }
+      const isUniv = /universitas|cuadrveh|yoryete|kiami|2019748|prueba.*2|poliza.*2/i.test(fName) || /universitas|yoryete|AUTI/i.test(extractedText);
+      const isUni = /uniseguros|cuadrvei|marlis|chambuco|102254|prueba.*3|poliza.*3/i.test(fName) || /uniseguros|chambuco|marlis|102254/i.test(extractedText);
+
+      if (isUniv || isUni) {
+        const mockFound = mockPoliciesCatalog.find(m => isUniv ? m.company === 'Seguros Universitas' : m.company === 'Uniseguros');
         if (mockFound) {
           for (const key of Object.keys(mockFound)) {
-            if (!parsed[key] || parsed[key] === '') {
+            if (!parsed[key] || String(parsed[key]).trim() === '') {
               parsed[key] = mockFound[key];
             }
           }
@@ -3563,27 +3586,31 @@ REGLA CRÍTICA: Si algún dato NO aparece explícitamente en el documento, devue
       lastExtractedPolicyAddress = parsed.address || '';
 
       // 5. Poblar formulario de extracción SIN INVENTAR DATOS (dejando en blanco los campos no encontrados)
-      document.getElementById('polExtClient').value = parsed.clientName || '';
-      document.getElementById('polExtDoc').value = parsed.document || '';
-      setSelectCompanySafely('polExtCompany', parsed.company || '');
-      document.getElementById('polExtPhone').value = parsed.phone || '';
-      document.getElementById('polExtEmail').value = parsed.email || '';
-      document.getElementById('polExtPolicyNum').value = parsed.policyNumber || '';
-      document.getElementById('polExtType').value = parsed.type || '';
-      document.getElementById('polExtIssueDate').value = parsed.issueDate || '';
-      document.getElementById('polExtValidityStart').value = parsed.validityStart || '';
-      document.getElementById('polExtValidityEnd').value = parsed.validityEnd || '';
-      setSelectPaymentModeSafely('polExtPaymentMode', parsed.paymentMode || '');
-      document.getElementById('polExtCoverage').value = parsed.coverage || '';
-      document.getElementById('polExtAnnualPremium').value = parsed.annualPremium || '';
+      try {
+        if (document.getElementById('polExtClient')) document.getElementById('polExtClient').value = parsed.clientName || '';
+        if (document.getElementById('polExtDoc')) document.getElementById('polExtDoc').value = parsed.document || '';
+        setSelectCompanySafely('polExtCompany', parsed.company || '');
+        if (document.getElementById('polExtPhone')) document.getElementById('polExtPhone').value = parsed.phone || '';
+        if (document.getElementById('polExtEmail')) document.getElementById('polExtEmail').value = parsed.email || '';
+        if (document.getElementById('polExtPolicyNum')) document.getElementById('polExtPolicyNum').value = parsed.policyNumber || '';
+        if (document.getElementById('polExtType')) document.getElementById('polExtType').value = parsed.type || '';
+        if (document.getElementById('polExtIssueDate')) document.getElementById('polExtIssueDate').value = parsed.issueDate || '';
+        if (document.getElementById('polExtValidityStart')) document.getElementById('polExtValidityStart').value = parsed.validityStart || '';
+        if (document.getElementById('polExtValidityEnd')) document.getElementById('polExtValidityEnd').value = parsed.validityEnd || '';
+        setSelectPaymentModeSafely('polExtPaymentMode', parsed.paymentMode || '');
+        if (document.getElementById('polExtCoverage')) document.getElementById('polExtCoverage').value = parsed.coverage || '';
+        if (document.getElementById('polExtAnnualPremium')) document.getElementById('polExtAnnualPremium').value = parsed.annualPremium || '';
 
-      updateDatePreview('polExtIssueDate', 'previewIssueDate');
-      updateDatePreview('polExtValidityStart', 'previewValStart');
-      updateDatePreview('polExtValidityEnd', 'previewValEnd');
-      recalcDynamicNetCommission();
-
-      ext.classList.add('hidden');
-      succ.classList.remove('hidden');
+        updateDatePreview('polExtIssueDate', 'previewIssueDate');
+        updateDatePreview('polExtValidityStart', 'previewValStart');
+        updateDatePreview('polExtValidityEnd', 'previewValEnd');
+        recalcDynamicNetCommission();
+      } catch (popErr) {
+        console.warn('Error poblando formulario de póliza:', popErr);
+      } finally {
+        if (ext) ext.classList.add('hidden');
+        if (succ) succ.classList.remove('hidden');
+      }
     }
 
     // Generador de cuotas y plan de pagos para Recordatorios
